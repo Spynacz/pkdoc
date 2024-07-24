@@ -1,0 +1,23 @@
+services:
+  database:
+    container_name: postgres-pkdoc
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+  backend:
+    container_name: spring-pkdoc
+    build:
+      context: papers
+      dockerfile: Dockerfile
+    image: spring-pkdoc:latest
+    ports:
+      - 8080:8080
