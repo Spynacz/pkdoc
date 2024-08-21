@@ -1,13 +1,13 @@
 package com.pkdoc.papers.service;
 
-import com.pkdoc.papers.DTOs.UserDTO;
-import com.pkdoc.papers.model.User;
-import com.pkdoc.papers.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.pkdoc.papers.model.User;
+import com.pkdoc.papers.repository.UserRepository;
 
 @Service
 public class UserService {
