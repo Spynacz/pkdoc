@@ -49,7 +49,7 @@ public class UserAuthProvider {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey)).build();
 
         DecodedJWT decoded = verifier.verify(token);
-        Optional<User> user = userService.findByUsername(decoded.getSubject());
+        Optional<User> user = userService.findByEmail(decoded.getSubject());
 
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }

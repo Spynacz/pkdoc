@@ -3,8 +3,7 @@ package com.pkdoc.papers.DTOs;
 import lombok.Data;
 
 @Data
-public class UserDTO {
-    private Long id;
+public class RegisterDTO {
     private String email;
-    private String token;
+    private String password;
 }

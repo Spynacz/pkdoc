@@ -43,7 +43,7 @@ public class UserController {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setRole(userDetails.getRole());
-            user.setUsername(userDetails.getUsername());
+            user.setEmail(userDetails.getEmail());
             user.setPassword(userDetails.getPassword());
             return ResponseEntity.ok(userService.save(user));
         } else {
