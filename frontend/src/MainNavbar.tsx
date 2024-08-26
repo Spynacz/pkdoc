@@ -28,7 +28,7 @@ export default function MainNavbar() {
 
   return (
     <Navbar fluid rounded>
-      <NavbarBrand href="https://flowbite-react.com">
+      <NavbarBrand href="/">
         <img
           src="/src/assets/favicon.svg"
           className="mr-3 h-6 sm:h-9"

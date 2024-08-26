@@ -5,11 +5,13 @@ import MainNavbar from "./MainNavbar";
 
 export default function App(): ReactElement {
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <Flowbite>
         <MainNavbar />
-        <Outlet />
+        <div className="flex flex-grow">
+          <Outlet />
+        </div>
       </Flowbite>
-    </>
+    </div>
   );
 }
