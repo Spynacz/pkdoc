@@ -9,7 +9,7 @@ import {
   Navbar,
   NavbarBrand,
 } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 
@@ -19,7 +19,7 @@ interface User {
 }
 
 interface UserCookie {
-  username: string;
+  email: string;
   token: string;
 }
 
@@ -27,7 +27,7 @@ export default function MainNavbar() {
   const [userCookie] = useCookies<string>(["user"]);
 
   return (
-    <Navbar fluid rounded>
+    <Navbar fluid>
       <NavbarBrand href="/">
         <img
           src="/src/assets/favicon.svg"
@@ -48,15 +48,37 @@ export default function MainNavbar() {
 
 function UserDropdown() {
   const [user, setUser] = useState<User | null>(null);
-  const [cookies] = useCookies<string>(["user"]);
-  const userCookie: UserCookie = cookies.user ? JSON.parse(cookies.user) : undefined;
+  const [cookies, setCookie, removeCookie] = useCookies<string>(["user"]);
+  const userCookie: UserCookie = cookies.user || undefined;
 
-  fetch("localhost:8080/user", {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + userCookie.token
-    }
-  })
+  useEffect(() => {
+    fetch(`/api/users/${userCookie.email}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + userCookie.token,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then((data: User) => {
+        return data;
+      })
+      .then((data) => {
+        setUser({
+          email: data.email,
+          picture: data.picture,
+        });
+      })
+      .catch((err) => console.log(err));
+  }, [userCookie.email, userCookie.token]);
+
+  function logOut(): void {
+    removeCookie("user");
+  }
 
   return (
     <Dropdown
@@ -67,15 +89,14 @@ function UserDropdown() {
       }
     >
       <DropdownHeader>
-        <span className="block text-sm">Le Userinho</span>
         <span className="block truncate text-sm font-medium">
-          name@pk.edu.pl
+          {user?.email}
         </span>
       </DropdownHeader>
       <DropdownItem>Profile</DropdownItem>
       <DropdownItem>Settings</DropdownItem>
       <DropdownDivider />
-      <DropdownItem>Sign out</DropdownItem>
+      <DropdownItem onClick={logOut}>Sign out</DropdownItem>
     </Dropdown>
   );
 }

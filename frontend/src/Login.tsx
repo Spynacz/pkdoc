@@ -1,5 +1,6 @@
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useState, type ReactElement } from "react";
+import { Link } from "react-router-dom";
 
 export default function Login(): ReactElement {
   const [email, setEmail] = useState<string>("");
@@ -49,6 +50,7 @@ export default function Login(): ReactElement {
             Login
           </Button>
         </form>
+        <Button as={Link} to={"/register"} fullSized>I don't have an account</Button>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ package com.pkdoc.papers.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,12 +28,16 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDTO> findAll() {
+        return userRepository.findAll().stream().map(userMapper::toUserDTO).collect(Collectors.toList());
     }
 
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public Optional<UserDTO> findById(Long id) {
+        return Optional.of(userMapper.toUserDTO(userRepository.findById(id).orElse(null)));
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public User save(User user) {
@@ -41,10 +46,6 @@ public class UserService {
 
     public void deleteById(Long id) {
         userRepository.deleteById(id);
-    }
-
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 
     public UserDTO login(LoginDTO loginDTO) {
@@ -56,7 +57,6 @@ public class UserService {
         } else {
             throw new RuntimeException("Invalid password"); // TODO: add HTTP code
         }
-
     }
 
     public UserDTO register(RegisterDTO registerDTO) {

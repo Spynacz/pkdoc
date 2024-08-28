@@ -1,21 +1,59 @@
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import { Button, Label, TextInput } from "flowbite-react";
 import { useState, type ReactElement } from "react";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Register(): ReactElement {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [password2, setPassword2] = useState<string>("");
+  const [userCookie, setUserCookie] = useCookies();
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle register logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+
+    interface RegisterResponse {
+      id: number;
+      email: string;
+      token: string;
+      // expiry: number;
+    }
+
+    fetch("/api/register", {
+      method: "POST",
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then((data: RegisterResponse) => {
+        return data;
+      })
+      .then((data) => {
+        const newUser = {
+          email: data.email,
+          token: data.token,
+        };
+        // const expiry = new Date(data.expiry);
+        // setUserCookie("user", newUser, { expires: expiry, sameSite: "strict" });
+        setUserCookie("user", newUser, { sameSite: "strict" });
+        navigate("/");
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
-    <div classNam="flex min-w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
+    <div className="flex min-w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
       <div className="w-full max-w-md space-y-4 rounded bg-white p-8 shadow-md dark:bg-gray-900">
-        <h2 clas="text-center text-2xl font-bold text-black dark:text-white">
+        <h2 className="text-center text-2xl font-bold text-black dark:text-white">
           Login
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -41,14 +79,24 @@ export default function Register(): ReactElement {
               required={true}
             />
           </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id="remember" />
-            <Label htmlFor="remember">Remember me</Label>
+          <div>
+            <Label htmlFor="password" value="Repeat password" />
+            <TextInput
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+              required={true}
+            />
           </div>
           <Button type="submit" fullSized>
-            Login
+            Register
           </Button>
         </form>
+        <Button as={Link} to={"/login"} fullSized>
+          I already have an account
+        </Button>
       </div>
     </div>
   );
