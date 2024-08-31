@@ -1,16 +1,50 @@
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useState, type ReactElement } from "react";
-import { Link } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
+
+interface LoginResponse {
+  email: string;
+  token: string;
+  refreshToken: string;
+}
 
 export default function Login(): ReactElement {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [userCookie, setUserCookie] = useCookies<string>(["user"]);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+
+    fetch("/api/login", {
+      method: "POST",
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then((data: LoginResponse) => {
+        return data;
+      })
+      .then((data) => {
+        const newUser = {
+          email: data.email,
+          token: data.token,
+          refreshToken: data.refreshToken
+        };
+        setUserCookie("user", newUser, { sameSite: "strict" });
+        navigate("/");
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -50,7 +84,9 @@ export default function Login(): ReactElement {
             Login
           </Button>
         </form>
-        <Button as={Link} to={"/register"} fullSized>I don't have an account</Button>
+        <Button as={Link} to={"/register"} fullSized>
+          I don't have an account
+        </Button>
       </div>
     </div>
   );

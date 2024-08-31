@@ -3,22 +3,28 @@ import { useState, type ReactElement } from "react";
 import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 
+interface RegisterResponse {
+  email: string;
+  token: string;
+  refreshToken: string;
+}
+
 export default function Register(): ReactElement {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
-  const [userCookie, setUserCookie] = useCookies();
+  const [error, setError] = useState<string | null>(null);
+  const [userCookie, setUserCookie] = useCookies<string>(["user"]);
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    interface RegisterResponse {
-      id: number;
-      email: string;
-      token: string;
-      // expiry: number;
+    if (password2 !== password) {
+      setError("Passwords don't match");
+      return;
     }
+    setError(null);
 
     fetch("/api/register", {
       method: "POST",
@@ -38,12 +44,12 @@ export default function Register(): ReactElement {
         return data;
       })
       .then((data) => {
+        console.log(data)
         const newUser = {
           email: data.email,
           token: data.token,
-        };
-        // const expiry = new Date(data.expiry);
-        // setUserCookie("user", newUser, { expires: expiry, sameSite: "strict" });
+          refreshToken: data.refreshToken
+        }
         setUserCookie("user", newUser, { sameSite: "strict" });
         navigate("/");
       })
@@ -54,7 +60,7 @@ export default function Register(): ReactElement {
     <div className="flex min-w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
       <div className="w-full max-w-md space-y-4 rounded bg-white p-8 shadow-md dark:bg-gray-900">
         <h2 className="text-center text-2xl font-bold text-black dark:text-white">
-          Login
+          Register
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -90,6 +96,7 @@ export default function Register(): ReactElement {
               required={true}
             />
           </div>
+          {error && <div className="text-center text-red-500">{error}</div>}
           <Button type="submit" fullSized>
             Register
           </Button>

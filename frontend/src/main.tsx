@@ -1,4 +1,5 @@
 import React from "react";
+import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
@@ -7,7 +8,7 @@ import Home from "./Home.tsx";
 import "./index.css";
 import Login from "./Login.tsx";
 import Register from "./Register.tsx";
-import { CookiesProvider } from "react-cookie";
+import UserProfile from "./UserProfile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
+      {
+        path: "/profile",
+        element: <UserProfile />,
+      }
     ],
   },
 ]);

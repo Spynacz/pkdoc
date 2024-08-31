@@ -11,7 +11,7 @@ import {
 } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface User {
   email: string;
@@ -21,6 +21,7 @@ interface User {
 interface UserCookie {
   email: string;
   token: string;
+  refreshToken: string;
 }
 
 export default function MainNavbar() {
@@ -28,7 +29,7 @@ export default function MainNavbar() {
 
   return (
     <Navbar fluid>
-      <NavbarBrand href="/">
+      <NavbarBrand as={Link} to="/">
         <img
           src="/src/assets/favicon.svg"
           className="mr-3 h-6 sm:h-9"
@@ -50,6 +51,7 @@ function UserDropdown() {
   const [user, setUser] = useState<User | null>(null);
   const [cookies, setCookie, removeCookie] = useCookies<string>(["user"]);
   const userCookie: UserCookie = cookies.user || undefined;
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`/api/users/${userCookie.email}`, {
@@ -74,11 +76,12 @@ function UserDropdown() {
         });
       })
       .catch((err) => console.log(err));
-  }, [userCookie.email, userCookie.token]);
+  }, [userCookie.email, userCookie.token, userCookie.refreshToken]);
 
-  function logOut(): void {
+  const logOut = (): void => {
     removeCookie("user");
-  }
+    navigate("/");
+  };
 
   return (
     <Dropdown
@@ -93,7 +96,7 @@ function UserDropdown() {
           {user?.email}
         </span>
       </DropdownHeader>
-      <DropdownItem>Profile</DropdownItem>
+      <DropdownItem as={Link} to="/profile">Profile</DropdownItem>
       <DropdownItem>Settings</DropdownItem>
       <DropdownDivider />
       <DropdownItem onClick={logOut}>Sign out</DropdownItem>
