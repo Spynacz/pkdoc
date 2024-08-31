@@ -36,28 +36,28 @@ public class UserController {
     }
 
     @GetMapping("/{id:\\d+}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.findById(id);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        Optional<UserDTO> user = userService.findById(id);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
-        Optional<User> user = userService.findByEmail(email);
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
+        Optional<UserDTO> user = userService.findByEmail(email);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
-        return userService.save(user);
+    public UserDTO createUser(@Valid @RequestBody UserDTO userDTO) {
+        return userService.save(userDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails) {
-        Optional<User> optionalUser = userService.findById(id);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails) {
+        Optional<UserDTO> optionalUser = userService.findById(id);
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setRole(userDetails.getRole());
+            UserDTO user = optionalUser.get();
+            // user.setRole(userDetails.getRole());
             user.setEmail(userDetails.getEmail());
             user.setPassword(userDetails.getPassword());
             return ResponseEntity.ok(userService.save(user));

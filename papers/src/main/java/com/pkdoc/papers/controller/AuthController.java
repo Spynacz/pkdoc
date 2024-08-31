@@ -1,7 +1,6 @@
 package com.pkdoc.papers.controller;
 
-import java.net.URI;
-
+import com.pkdoc.papers.DTOs.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,11 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.pkdoc.papers.DTOs.LoginDTO;
-import com.pkdoc.papers.DTOs.RegisterDTO;
-import com.pkdoc.papers.DTOs.UserDTO;
 import com.pkdoc.papers.config.UserAuthProvider;
-import com.pkdoc.papers.service.UserService;
+import com.pkdoc.papers.service.AuthService;
 
 import jakarta.validation.Valid;
 
@@ -21,27 +17,33 @@ import jakarta.validation.Valid;
 @RequestMapping("/api")
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
     private final UserAuthProvider userAuthProvider;
 
     @Autowired
-    public AuthController(UserService userService, UserAuthProvider userAuthProvider) {
-        this.userService = userService;
+    public AuthController(AuthService authService, UserAuthProvider userAuthProvider) {
+        this.authService = authService;
         this.userAuthProvider = userAuthProvider;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody @Valid LoginDTO loginDTO) {
-        UserDTO userDTO = userService.login(loginDTO);
-        userDTO.setToken(userAuthProvider.createToken(userDTO.getEmail()));
-        return ResponseEntity.created(URI.create("/api/users/" + userDTO.getId())).body(userDTO);
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody @Valid LoginDTO loginDTO) {
+        AuthResponseDTO authResponse = authService.login(loginDTO);
+        authResponse.setToken(userAuthProvider.createToken(authResponse.getEmail()));
+        authResponse.setRefreshToken(userAuthProvider.createRefreshToken(authResponse.getEmail()));
+        return ResponseEntity.ok().body(authResponse);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody @Valid RegisterDTO registerDTO) {
-        UserDTO user = userService.register(registerDTO);
-        user.setToken(userAuthProvider.createToken(user.getEmail()));
-        return ResponseEntity.created(URI.create("/api/users/" + user.getId())).body(user);
+    public ResponseEntity<AuthResponseDTO> register(@RequestBody @Valid RegisterDTO registerDTO) {
+        AuthResponseDTO authResponse = authService.register(registerDTO);
+        authResponse.setToken(userAuthProvider.createToken(authResponse.getEmail()));
+        return ResponseEntity.ok().body(authResponse);
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponseDTO> refresh(@RequestBody @Valid RefreshTokenDTO refreshTokenDTO) {
+        AuthResponseDTO authResponse = authService.refresh(refreshTokenDTO.getToken());
+        return ResponseEntity.ok().body(authResponse);
+    }
 }
