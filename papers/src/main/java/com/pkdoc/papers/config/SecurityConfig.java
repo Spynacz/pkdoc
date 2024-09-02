@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sman -> sman.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/login", "/api/register")
+                        .requestMatchers(HttpMethod.POST, "/api/login", "/api/register", "/api/refresh")
                         .permitAll()
                         .anyRequest().authenticated());
 

@@ -1,12 +1,12 @@
 import { Button, Label, TextInput } from "flowbite-react";
 import { useState, type ReactElement } from "react";
-import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "./useUser";
 
 interface RegisterResponse {
   email: string;
-  token: string;
   refreshToken: string;
+  token: string;
 }
 
 export default function Register(): ReactElement {
@@ -14,7 +14,7 @@ export default function Register(): ReactElement {
   const [password, setPassword] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [userCookie, setUserCookie] = useCookies<string>(["user"]);
+  const { login } = useUser();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -44,13 +44,9 @@ export default function Register(): ReactElement {
         return data;
       })
       .then((data) => {
-        console.log(data)
-        const newUser = {
-          email: data.email,
-          token: data.token,
-          refreshToken: data.refreshToken
-        }
-        setUserCookie("user", newUser, { sameSite: "strict" });
+        login(data.email)
+        sessionStorage.setItem("token", data.token);
+        localStorage.setItem("refreshToken", data.refreshToken);
         navigate("/");
       })
       .catch((err) => console.log(err));

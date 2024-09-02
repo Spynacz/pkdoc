@@ -1,3 +1,4 @@
+import { makeUseAxios } from "axios-hooks";
 import {
   Avatar,
   Button,
@@ -9,23 +10,18 @@ import {
   Navbar,
   NavbarBrand,
 } from "flowbite-react";
-import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "./AxiosConfig";
+import { useUser } from "./useUser";
 
 interface User {
   email: string;
   picture: string;
 }
 
-interface UserCookie {
-  email: string;
-  token: string;
-  refreshToken: string;
-}
-
 export default function MainNavbar() {
-  const [userCookie] = useCookies<string>(["user"]);
+  const { email } = useUser()
 
   return (
     <Navbar fluid>
@@ -41,67 +37,55 @@ export default function MainNavbar() {
       </NavbarBrand>
       <div className="flex gap-3">
         <DarkThemeToggle />
-        {"user" in userCookie ? <UserDropdown /> : <GuestLogin />}
+        {email.length > 0 ? <UserDropdown /> : <GuestLogin />}
       </div>
     </Navbar>
   );
 }
 
 function UserDropdown() {
-  const [user, setUser] = useState<User | null>(null);
-  const [cookies, setCookie, removeCookie] = useCookies<string>(["user"]);
-  const userCookie: UserCookie = cookies.user || undefined;
+  const { email, logout } = useUser()
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch(`/api/users/${userCookie.email}`, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + userCookie.token,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-        return response.json();
-      })
-      .then((data: User) => {
-        return data;
-      })
-      .then((data) => {
-        setUser({
-          email: data.email,
-          picture: data.picture,
-        });
-      })
-      .catch((err) => console.log(err));
-  }, [userCookie.email, userCookie.token, userCookie.refreshToken]);
+  const useAxios = makeUseAxios({
+    axios: axiosInstance,
+  });
+
+  const [{ data, loading, error }, refetch] = useAxios(
+    `/api/users/${email}`,
+  );
 
   const logOut = (): void => {
-    removeCookie("user");
+    logout()
+    localStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("token");
     navigate("/");
   };
 
-  return (
-    <Dropdown
-      arrowIcon={false}
-      inline
-      label={
-        <Avatar alt="User settings" img="/src/assets/account.svg" rounded />
-      }
-    >
-      <DropdownHeader>
-        <span className="block truncate text-sm font-medium">
-          {user?.email}
-        </span>
-      </DropdownHeader>
-      <DropdownItem as={Link} to="/profile">Profile</DropdownItem>
-      <DropdownItem>Settings</DropdownItem>
-      <DropdownDivider />
-      <DropdownItem onClick={logOut}>Sign out</DropdownItem>
-    </Dropdown>
-  );
+  useEffect(() => {
+    refetch()
+      .catch ((err) => console.error(err));
+}, [refetch]);
+
+return (
+  <Dropdown
+    arrowIcon={false}
+    inline
+    label={
+      <Avatar alt="User settings" img="/src/assets/account.svg" rounded />
+    }
+  >
+    <DropdownHeader>
+      <span className="block truncate text-sm font-medium">{email}</span>
+    </DropdownHeader>
+    <DropdownItem as={Link} to="/profile">
+      Profile
+    </DropdownItem>
+    <DropdownItem>Settings</DropdownItem>
+    <DropdownDivider />
+    <DropdownItem onClick={logOut}>Sign out</DropdownItem>
+  </Dropdown>
+);
 }
 
 function GuestLogin() {

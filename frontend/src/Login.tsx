@@ -1,7 +1,7 @@
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useState, type ReactElement } from "react";
-import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "./useUser";
 
 interface LoginResponse {
   email: string;
@@ -12,7 +12,7 @@ interface LoginResponse {
 export default function Login(): ReactElement {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [userCookie, setUserCookie] = useCookies<string>(["user"]);
+  const { login } = useUser()
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,12 +36,9 @@ export default function Login(): ReactElement {
         return data;
       })
       .then((data) => {
-        const newUser = {
-          email: data.email,
-          token: data.token,
-          refreshToken: data.refreshToken
-        };
-        setUserCookie("user", newUser, { sameSite: "strict" });
+        login(data.email)
+        sessionStorage.setItem("token", data.token);
+        localStorage.setItem("refreshToken", data.refreshToken);
         navigate("/");
       })
       .catch((err) => console.log(err));
