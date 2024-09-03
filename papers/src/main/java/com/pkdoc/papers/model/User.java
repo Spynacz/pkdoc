@@ -1,16 +1,12 @@
 package com.pkdoc.papers.model;
 
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "PROFILE")
 @Data
 public class User {
 
@@ -24,6 +20,10 @@ public class User {
         @NotBlank
         private String password;
 
-        @Nullable
-        private String role;
+        @Enumerated(EnumType.STRING)
+        private Role role;
+
+        private String name;
+
+        private String department;
 }

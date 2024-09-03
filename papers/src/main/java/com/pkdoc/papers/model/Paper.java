@@ -1,15 +1,13 @@
 package com.pkdoc.papers.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
-@Table(name = "PAPERS")
+@Table(name = "PAPER")
 @Data
 public class Paper {
 
@@ -23,4 +21,14 @@ public class Paper {
     private String abstractText;
 
     private String author;
+
+    @ManyToOne
+    private User uploader;
+
+    private boolean privateOnly;
+
+    @Enumerated(EnumType.STRING)
+    private PaperType type;
+
+    private String keywords;
 }

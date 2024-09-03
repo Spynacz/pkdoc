@@ -23,8 +23,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/papers")
 public class PapersController {
 
+    private final PaperService paperService;
+
     @Autowired
-    private PaperService paperService;
+    public PapersController(PaperService paperService) {
+        this.paperService = paperService;
+    }
 
     @GetMapping
     public List<Paper> getAllPapers() {
@@ -34,11 +38,7 @@ public class PapersController {
     @GetMapping("/{id}")
     public ResponseEntity<Paper> getPaperById(@PathVariable Long id) {
         Optional<Paper> paper = paperService.findById(id);
-        if (paper.isPresent()) {
-            return ResponseEntity.ok(paper.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return paper.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -64,7 +64,7 @@ public class PapersController {
     public ResponseEntity<Void> deletePaper(@PathVariable Long id) {
         if (paperService.findById(id).isPresent()) {
             paperService.deleteById(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
