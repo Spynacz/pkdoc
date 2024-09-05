@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -18,6 +19,7 @@ public class Paper {
     @NotBlank
     private String title;
 
+    @Column(name = "abstract_text")
     private String abstractText;
 
     private String author;
@@ -25,6 +27,10 @@ public class Paper {
     @ManyToOne
     private User uploader;
 
+    @Column(name = "publish_date")
+    private LocalDateTime publishDate;
+
+    @Column(name = "private_only")
     private boolean privateOnly;
 
     @Enumerated(EnumType.STRING)

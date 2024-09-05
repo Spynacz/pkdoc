@@ -1,23 +1,17 @@
 package com.pkdoc.papers.controller;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.pkdoc.papers.model.Paper;
 import com.pkdoc.papers.service.PaperService;
-
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/papers")
@@ -31,8 +25,17 @@ public class PapersController {
     }
 
     @GetMapping
-    public List<Paper> getAllPapers() {
-        return paperService.findAll();
+    public Page<Paper> getAllPapers(
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            Pageable pageable) {
+
+        // Optional sorting logic, defaulting to "id" if no sorting provided
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        Sort sort = (sortBy != null) ? Sort.by(direction, sortBy) : Sort.by("id");
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        return paperService.findAll(sortedPageable);
     }
 
     @GetMapping("/{id}")
@@ -70,5 +73,5 @@ public class PapersController {
         }
     }
 
-    
+
 }

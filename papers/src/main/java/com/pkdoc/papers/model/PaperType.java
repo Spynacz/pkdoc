@@ -5,5 +5,7 @@ public enum PaperType {
     BOOK,
     DISSERTATION,
     PROJECT,
-    PATENT
+    PATENT,
+    JOURNAL,
+    CONFERENCE_PAPER
 }

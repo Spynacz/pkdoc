@@ -4,6 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="db/changelog/changesets/202409032019_initial_changeset.xml"/>
+    <include file="/db/changelog/changesets/202409032019_initial_changeset.xml"/>
+    <include file="/db/changelog/changesets/202409051935_add_paper_publish_data.xml"/>
 
 </databaseChangeLog>
