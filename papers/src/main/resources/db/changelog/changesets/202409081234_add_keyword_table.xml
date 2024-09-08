@@ -1,0 +1,57 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="mateusz" id="add_keyword_table">
+        <preConditions>
+            <and>
+                <tableExists tableName="paper"/>
+                <columnExists columnName="keywords" tableName="paper"/>
+                <not>
+                    <tableExists tableName="keyword"/>
+                </not>
+                <not>
+                    <tableExists tableName="paper_keywords"/>
+                </not>
+            </and>
+        </preConditions>
+
+        <createTable tableName="keyword">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="keyword_pkey"/>
+            </column>
+            <column name="keyword" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="paper_keywords">
+            <column name="paper_id" type="BIGINT"/>
+            <column name="keyword_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="paper_id" baseTableName="paper_keywords"
+                                 constraintName="paper" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="paper" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="keyword_id" baseTableName="paper_keywords"
+                                 constraintName="keyword" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="keyword" validate="true"/>
+    </changeSet>
+
+    <changeSet author="mateusz" id="remove_paper_keywords">
+        <preConditions>
+            <and>
+                <tableExists tableName="paper"/>
+                <columnExists tableName="paper" columnName="keywords"/>
+            </and>
+        </preConditions>
+        <dropColumn tableName="paper" columnName="keywords"/>
+    </changeSet>
+
+</databaseChangeLog>

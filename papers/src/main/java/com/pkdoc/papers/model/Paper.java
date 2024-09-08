@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "PAPER")
@@ -13,28 +13,36 @@ import java.util.List;
 public class Paper {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
     @NotBlank
+    @Column(name = "title")
     private String title;
 
     @Column(name = "abstract_text")
     private String abstractText;
 
-    private String author;
+    @Column(name = "authors")
+    private String authors;
 
     @ManyToOne
     private User uploader;
 
     @Column(name = "publish_date")
-    private LocalDateTime publishDate;
+    private LocalDate publishDate;
 
     @Column(name = "private_only")
     private boolean privateOnly;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "type")
     private PaperType type;
 
-    private String keywords;
+    @ManyToMany
+    @JoinTable(name = "paper_keywords",
+               joinColumns = @JoinColumn(name = "paper_id"),
+               inverseJoinColumns = @JoinColumn(name = "keyword_id"))
+    private Set<Keyword> keywords;
 }
