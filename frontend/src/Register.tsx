@@ -44,7 +44,7 @@ export default function Register(): ReactElement {
         return data;
       })
       .then((data) => {
-        login(data.email)
+        login(data.email);
         sessionStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
         navigate("/");
@@ -53,7 +53,7 @@ export default function Register(): ReactElement {
   };
 
   return (
-    <div className="flex min-w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
+    <div className="my-auto flex min-w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
       <div className="w-full max-w-md space-y-4 rounded bg-white p-8 shadow-md dark:bg-gray-900">
         <h2 className="text-center text-2xl font-bold text-black dark:text-white">
           Register

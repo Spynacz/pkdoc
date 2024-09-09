@@ -12,7 +12,7 @@ interface LoginResponse {
 export default function Login(): ReactElement {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { login } = useUser()
+  const { login } = useUser();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,7 +36,7 @@ export default function Login(): ReactElement {
         return data;
       })
       .then((data) => {
-        login(data.email)
+        login(data.email);
         sessionStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
         navigate("/");
@@ -45,7 +45,7 @@ export default function Login(): ReactElement {
   };
 
   return (
-    <div className="flex min-w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
+    <div className="my-auto flex min-w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
       <div className="w-full max-w-md space-y-4 rounded bg-white p-8 shadow-md dark:bg-gray-900">
         <h2 className="text-center text-2xl font-bold text-black dark:text-white">
           Login

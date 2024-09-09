@@ -10,7 +10,7 @@ import {
   Navbar,
   NavbarBrand,
 } from "flowbite-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "./AxiosConfig";
 import { useUser } from "./useUser";
@@ -21,7 +21,7 @@ interface User {
 }
 
 export default function MainNavbar() {
-  const { email } = useUser()
+  const { email } = useUser();
 
   return (
     <Navbar fluid>
@@ -44,48 +44,48 @@ export default function MainNavbar() {
 }
 
 function UserDropdown() {
-  const { email, logout } = useUser()
+  const { email, logout } = useUser();
+  const [picture, setPicture] = useState(""); // probably temporary
   const navigate = useNavigate();
 
   const useAxios = makeUseAxios({
     axios: axiosInstance,
   });
 
-  const [{ data, loading, error }, refetch] = useAxios(
-    `/api/users/${email}`,
-  );
+  const [{ data, loading, error }, refetch] = useAxios(`/api/users/${email}`);
 
   const logOut = (): void => {
-    logout()
+    logout();
     localStorage.removeItem("refreshToken");
     sessionStorage.removeItem("token");
     navigate("/");
   };
 
   useEffect(() => {
-    refetch()
-      .catch ((err) => console.error(err));
-}, [refetch]);
+    refetch().catch((err) => console.error(err));
+  }, [refetch]);
 
-return (
-  <Dropdown
-    arrowIcon={false}
-    inline
-    label={
-      <Avatar alt="User settings" img="/src/assets/account.svg" rounded />
-    }
-  >
-    <DropdownHeader>
-      <span className="block truncate text-sm font-medium">{email}</span>
-    </DropdownHeader>
-    <DropdownItem as={Link} to="/profile">
-      Profile
-    </DropdownItem>
-    <DropdownItem>Settings</DropdownItem>
-    <DropdownDivider />
-    <DropdownItem onClick={logOut}>Sign out</DropdownItem>
-  </Dropdown>
-);
+  function getLabel(): React.ReactNode {
+    return picture ? (
+      <Avatar alt="User" img="/src/assets/account.svg" rounded />
+    ) : (
+      <Avatar alt="User" rounded />
+    );
+  }
+
+  return (
+    <Dropdown arrowIcon={false} inline label={getLabel()}>
+      <DropdownHeader>
+        <span className="block truncate text-sm font-medium">{email}</span>
+      </DropdownHeader>
+      <DropdownItem as={Link} to="/profile">
+        Profile
+      </DropdownItem>
+      <DropdownItem>Settings</DropdownItem>
+      <DropdownDivider />
+      <DropdownItem onClick={logOut}>Sign out</DropdownItem>
+    </Dropdown>
+  );
 }
 
 function GuestLogin() {
