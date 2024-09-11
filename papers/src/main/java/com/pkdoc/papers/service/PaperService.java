@@ -1,68 +1,55 @@
 package com.pkdoc.papers.service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import com.pkdoc.papers.DTOs.PaperCreateDTO;
-import com.pkdoc.papers.model.Keyword;
+import com.pkdoc.papers.DTOs.PaperResponseDTO;
+import com.pkdoc.papers.mappers.PaperMapper;
 import com.pkdoc.papers.model.Paper;
 import com.pkdoc.papers.repository.KeywordRepository;
 import com.pkdoc.papers.repository.PaperRepository;
+import com.pkdoc.papers.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PaperService {
 
     private final PaperRepository paperRepository;
     private final KeywordRepository keywordRepository;
+    private final PaperMapper paperMapper;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PaperService(PaperRepository paperRepository, KeywordRepository keywordRepository) {
+    public PaperService(PaperRepository paperRepository, KeywordRepository keywordRepository, PaperMapper paperMapper, UserRepository userRepository) {
         this.paperRepository = paperRepository;
         this.keywordRepository = keywordRepository;
+        this.paperMapper = paperMapper;
+        this.userRepository = userRepository;
     }
 
     public List<Paper> findAll() {
         return paperRepository.findAll();
     }
 
-    public Page<Paper> findAll(Pageable pageable) {
-        return paperRepository.findAll(pageable);
+    public Page<PaperResponseDTO> findAll(Pageable pageable) {
+        Page<Paper> papers = paperRepository.findAll(pageable);
+
+        List<PaperResponseDTO> paperResponseDTOs = papers.stream().map(paperMapper::toPaperResponseDTO).toList();
+        return new PageImpl<>(paperResponseDTOs, pageable, papers.getTotalElements());
     }
 
-    public Optional<Paper> findById(Long id) {
-        return paperRepository.findById(id);
+    public Optional<PaperResponseDTO> findById(Long id) {
+        return paperRepository.findById(id).map(paperMapper::toPaperResponseDTO);
     }
 
-    public Paper save(PaperCreateDTO paperCreateDTO) {
-        Paper paper = new Paper();
-        paper.setTitle(paperCreateDTO.getTitle());
-        paper.setAbstractText(paperCreateDTO.getAbstractText());
-        paper.setAuthors(paperCreateDTO.getAuthors());
-        paper.setPublishDate(paperCreateDTO.getPublishDate());
-        paper.setPrivateOnly(paperCreateDTO.isPrivateOnly());
-        paper.setType(paperCreateDTO.getType());
-
-        Set<Keyword> keywords = new HashSet<>();
-
-        for (String keywordString : paperCreateDTO.getKeywords()) {
-            Keyword keyword = keywordRepository.findByKeyword(keywordString)
-                    .orElseGet(() -> {
-                        Keyword newKeyword = new Keyword();
-                        newKeyword.setKeyword(keywordString);
-                        return keywordRepository.save(newKeyword);
-                    });
-            keywords.add(keyword);
-        }
-
-        paper.setKeywords(keywords);
-        return paperRepository.save(paper);
+    public PaperResponseDTO save(PaperCreateDTO paperCreateDTO) {
+        return paperMapper.toPaperResponseDTO(
+                paperRepository.save(paperMapper.toPaper(paperCreateDTO, userRepository, keywordRepository)));
     }
 
     public void deleteById(Long id) {
