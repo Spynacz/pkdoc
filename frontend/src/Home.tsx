@@ -3,14 +3,14 @@ import { Card, Pagination } from "flowbite-react";
 import { ReactElement, useState, useEffect } from "react";
 import axiosInstance from "./AxiosConfig";
 
-enum PaperType {
-  PAPER,
-  BOOK,
-  DISSERTATION,
-  PROJECT,
-  PATENT,
-  JOURNAL,
-  CONFERENCE_PAPER,
+export enum PaperType {
+  PAPER = "paper",
+  BOOK = "book",
+  DISSERTATION = "dis",
+  PROJECT = "project",
+  PATENT = "patent",
+  JOURNAL = "journal",
+  CONFERENCE_PAPER = "conf",
 }
 
 interface Paper {

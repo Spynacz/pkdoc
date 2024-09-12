@@ -1,16 +1,16 @@
 import { makeUseAxios } from "axios-hooks";
 import {
-  Avatar,
-  Button,
-  DarkThemeToggle,
-  Dropdown,
-  DropdownDivider,
-  DropdownHeader,
-  DropdownItem,
   Navbar,
   NavbarBrand,
+  DarkThemeToggle,
+  Avatar,
+  Dropdown,
+  DropdownHeader,
+  DropdownItem,
+  DropdownDivider,
+  Button,
 } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "./AxiosConfig";
 import { useUser } from "./useUser";
@@ -20,7 +20,7 @@ interface User {
   picture: string;
 }
 
-export default function MainNavbar() {
+export default function MainNavbar(): ReactElement {
   const { email } = useUser();
 
   return (
