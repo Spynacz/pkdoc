@@ -32,10 +32,6 @@ public class PaperService {
         this.userRepository = userRepository;
     }
 
-    public List<Paper> findAll() {
-        return paperRepository.findAll();
-    }
-
     public Page<PaperResponseDTO> findAll(Pageable pageable) {
         Page<Paper> papers = paperRepository.findAll(pageable);
 

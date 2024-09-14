@@ -1,6 +1,5 @@
 package com.pkdoc.papers.DTOs;
 
-import com.pkdoc.papers.model.Keyword;
 import com.pkdoc.papers.model.PaperType;
 import lombok.Data;
 
@@ -18,5 +17,5 @@ public class PaperResponseDTO {
     private LocalDate publishDate;
     private boolean privateOnly;
     private PaperType type;
-    private Set<Keyword> keywords;
+    private Set<KeywordResponseDTO> keywords;
 }
