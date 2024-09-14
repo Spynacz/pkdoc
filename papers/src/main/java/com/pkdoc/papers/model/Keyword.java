@@ -15,8 +15,8 @@ public class Keyword {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "keyword")
-    private String keyword;
+    @Column(name = "text")
+    private String text;
 
     @ManyToMany(mappedBy = "keywords")
     private Set<Paper> papers;

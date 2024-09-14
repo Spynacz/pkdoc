@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface PaperMapper {
 
-    @Mapping(source = "uploader.id", target = "uploader.id")
-    @Mapping(source = "uploader.name", target = "uploader.name")
     PaperResponseDTO toPaperResponseDTO(Paper paper);
 
     @Mapping(source = "uploaderId", target = "uploader", qualifiedByName = "mapUploaderIdToUploader")
@@ -35,9 +33,9 @@ public interface PaperMapper {
 
     @Named("mapKeywordsStringsToKeywords")
     default Set<Keyword> mapKeywordsStringsToKeywords(Set<String> keywords, @Context KeywordRepository keywordRepository) {
-        return keywords.stream().map(k -> keywordRepository.findByKeyword(k).orElseGet(() -> {
+        return keywords.stream().map(k -> keywordRepository.findByText(k).orElseGet(() -> {
             Keyword keyword = new Keyword();
-            keyword.setKeyword(k);
+            keyword.setText(k);
             return keywordRepository.save(keyword);
         })).collect(Collectors.toSet());
     }

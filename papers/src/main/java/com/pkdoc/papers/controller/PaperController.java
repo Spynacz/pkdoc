@@ -16,12 +16,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/papers")
-public class PapersController {
+public class PaperController {
 
     private final PaperService paperService;
 
     @Autowired
-    public PapersController(PaperService paperService) {
+    public PaperController(PaperService paperService) {
         this.paperService = paperService;
     }
 
