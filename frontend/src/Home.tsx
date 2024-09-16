@@ -1,17 +1,12 @@
 import { makeUseAxios } from "axios-hooks";
 import { Card, Pagination } from "flowbite-react";
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import axiosInstance from "./AxiosConfig";
+import { PaperType } from "./PaperType";
 
-export enum PaperType {
-  PAPER = "paper",
-  BOOK = "book",
-  DISSERTATION = "dis",
-  PROJECT = "project",
-  PATENT = "patent",
-  JOURNAL = "journal",
-  CONFERENCE_PAPER = "conf",
-}
+const useAxios = makeUseAxios({
+  axios: axiosInstance,
+});
 
 interface Paper {
   id: number;
@@ -28,9 +23,6 @@ export default function Home(): ReactElement {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const useAxios = makeUseAxios({
-    axios: axiosInstance,
-  });
 
   const [{ data }, fetchLatestPapers] = useAxios({
     url: "/api/papers",

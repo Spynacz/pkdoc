@@ -20,29 +20,6 @@ interface User {
   picture: string;
 }
 
-export default function MainNavbar(): ReactElement {
-  const { email } = useUser();
-
-  return (
-    <Navbar fluid>
-      <NavbarBrand as={Link} to="/">
-        <img
-          src="/src/assets/favicon.svg"
-          className="mr-3 h-6 sm:h-9"
-          alt="PKDoc"
-        />
-        <span className="self-center whitespace-nowrap text-xl font-semibold text-gray-700 dark:text-white">
-          PKDoc
-        </span>
-      </NavbarBrand>
-      <div className="flex gap-3">
-        <DarkThemeToggle />
-        {email.length > 0 ? <UserDropdown /> : <GuestLogin />}
-      </div>
-    </Navbar>
-  );
-}
-
 function UserDropdown() {
   const { email, logout } = useUser();
   const [picture, setPicture] = useState(""); // probably temporary
@@ -93,5 +70,28 @@ function GuestLogin() {
     <Button as={Link} to="/login">
       Sign In
     </Button>
+  );
+}
+
+export default function MainNavbar(): ReactElement {
+  const { email } = useUser();
+
+  return (
+    <Navbar fluid className="sticky top-0 shadow-md border border-gray-200 dark:border-gray-700">
+      <NavbarBrand as={Link} to="/">
+        <img
+          src="/src/assets/favicon.svg"
+          className="mr-3 h-6 sm:h-9"
+          alt="PKDoc"
+        />
+        <span className="self-center whitespace-nowrap text-xl font-semibold text-gray-700 dark:text-white">
+          PKDoc
+        </span>
+      </NavbarBrand>
+      <div className="flex gap-3">
+        <DarkThemeToggle />
+        {email.length > 0 ? <UserDropdown /> : <GuestLogin />}
+      </div>
+    </Navbar>
   );
 }
