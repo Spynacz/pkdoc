@@ -6,11 +6,11 @@ import MainNavbar from "./MainNavbar";
 
 export default function App(): ReactElement {
   return (
-    <div className="flex min-h-screen flex-col bg-white dark:bg-gray-700">
+    <div className="flex h-screen flex-col bg-white dark:bg-gray-700">
       <Flowbite>
         <UserProvider>
           <MainNavbar />
-            <Outlet />
+          <Outlet />
         </UserProvider>
       </Flowbite>
     </div>
