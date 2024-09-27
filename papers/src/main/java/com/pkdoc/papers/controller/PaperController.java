@@ -1,6 +1,7 @@
 package com.pkdoc.papers.controller;
 
 import com.pkdoc.papers.DTOs.PaperCreateDTO;
+import com.pkdoc.papers.DTOs.PaperQueryParamsDTO;
 import com.pkdoc.papers.DTOs.PaperResponseDTO;
 import com.pkdoc.papers.service.PaperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +27,14 @@ public class PaperController {
     }
 
     @GetMapping
-    public Page<PaperResponseDTO> getAllPapers(
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
-            Pageable pageable) {
+    public Page<PaperResponseDTO> getAllPapers(PaperQueryParamsDTO queryParams, Pageable pageable) {
 
         // Optional sorting logic, defaulting to "id" if no sorting provided
-        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
-        Sort sort = (sortBy != null) ? Sort.by(direction, sortBy) : Sort.by("id");
-        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Sort.Direction direction = Sort.Direction.fromString(queryParams.getOrder());
+        Sort sorter = (queryParams.getSort() != null) ? Sort.by(direction, queryParams.getSort()) : Sort.by("id");
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorter);
 
-        return paperService.findAll(sortedPageable);
+        return paperService.findAll(queryParams, sortedPageable);
     }
 
     @GetMapping("/{id}")
