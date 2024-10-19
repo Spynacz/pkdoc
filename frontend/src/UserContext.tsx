@@ -1,38 +1,46 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
+import {createContext, ReactNode, useEffect, useState} from "react";
 
 export const UserContext = createContext({
-  email: "",
-  login: (email: string) => {},
-  logout: () => {},
+    id: -1,
+    email: "",
+    login: (id: number, email: string) => {},
+    logout: () => {},
 });
 
 interface UserProviderProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
-export const UserProvider = ({ children }: UserProviderProps) => {
-  const [email, setEmail] = useState("");
+export const UserProvider = ({children}: UserProviderProps) => {
+    const [id, setId] = useState(-1);
+    const [email, setEmail] = useState("");
 
-  useEffect(() => {
-    const storedEmail = localStorage.getItem("user");
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
-  }, []);
+    useEffect(() => {
+        const storedId = localStorage.getItem("userId");
+        const storedEmail = localStorage.getItem("userEmail");
+        if (storedId && storedEmail) {
+            setId(JSON.parse(storedId));
+            setEmail(storedEmail);
+        }
+    }, []);
 
-  const login = (email: string) => {
-    setEmail(email);
-    localStorage.setItem("user", email);
-  };
+    const login = (id: number, email: string) => {
+        setId(id);
+        setEmail(email);
+        localStorage.setItem("userId", JSON.stringify(id));
+        localStorage.setItem("userEmail", email);
+    };
 
-  const logout = () => {
-    setEmail("");
-    localStorage.removeItem("user");
-  };
+    const logout = () => {
+        setId(-1);
+        setEmail("");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("userEmail");
+    };
 
-  return (
-    <UserContext.Provider value={{ email, login, logout }}>
-      {children}
-    </UserContext.Provider>
-  );
+    return (
+        <UserContext.Provider value={{id, email, login, logout}}>
+            {children}
+        </UserContext.Provider>
+    );
 };
