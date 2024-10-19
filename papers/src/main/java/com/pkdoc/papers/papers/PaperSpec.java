@@ -2,12 +2,12 @@ package com.pkdoc.papers.papers;
 
 import com.pkdoc.papers.model.Keyword;
 import com.pkdoc.papers.model.Paper;
-import com.pkdoc.papers.model.PaperType;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PaperSpec {
@@ -16,17 +16,22 @@ public class PaperSpec {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("uploader").get("id"), userId);
     }
 
-    public static Specification<Paper> hasType(PaperType type) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("type"), type);
+    public static Specification<Paper> hasTypes(List<String> types) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> typePredicates = new ArrayList<>();
+            for (String type : types) {
+                typePredicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("type")), type.toString().toLowerCase()));
+            }
+            return criteriaBuilder.or(typePredicates.toArray(new Predicate[0]));
+        };
     }
 
     public static Specification<Paper> hasTitle(String title) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), "%" + title + "%");
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%");
     }
 
     public static Specification<Paper> hasAuthors(List<String> authors) {
         return (root, query, criteriaBuilder) -> {
-            criteriaBuilder.like(root.get("authors"), "%" + authors + "%");
             List<Predicate> authorPredicates = new ArrayList<>();
             for (String author : authors) {
                 authorPredicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("authors")), "%" + author.toLowerCase() + "%"));

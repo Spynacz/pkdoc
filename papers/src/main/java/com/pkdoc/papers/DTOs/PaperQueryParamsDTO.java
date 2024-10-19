@@ -1,13 +1,17 @@
 package com.pkdoc.papers.DTOs;
 
-import com.pkdoc.papers.model.PaperType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaperQueryParamsDTO {
     private String sort;
     private String order = "ASC";
@@ -15,7 +19,7 @@ public class PaperQueryParamsDTO {
     private long size;
     private long user = -1;
     private String title;
-    private PaperType type;
+    private List<String> types;
     private List<String> authors;
     private List<String> keywords;
 }

@@ -41,16 +41,16 @@ public class PaperService {
         if (queryParams.getUser() > -1) {
             spec = spec.and(PaperSpec.hasUser(queryParams.getUser()));
         }
-        if (queryParams.getType() != null) {
-            spec = spec.and(PaperSpec.hasType(queryParams.getType()));
+        if (queryParams.getTypes() != null && !queryParams.getTypes().isEmpty()) {
+            spec = spec.and(PaperSpec.hasTypes(queryParams.getTypes()));
         }
-        if (queryParams.getTitle() != null) {
+        if (!queryParams.getTitle().isEmpty()) {
             spec = spec.and(PaperSpec.hasTitle(queryParams.getTitle()));
         }
-        if (queryParams.getAuthors() != null) {
+        if (queryParams.getAuthors() != null && !queryParams.getAuthors().isEmpty()) {
             spec = spec.and(PaperSpec.hasAuthors(queryParams.getAuthors()));
         }
-        if (queryParams.getKeywords() != null) {
+        if (queryParams.getKeywords() != null && !queryParams.getKeywords().isEmpty()) {
             spec = spec.and(PaperSpec.hasKeywords(queryParams.getKeywords()));
         }
 

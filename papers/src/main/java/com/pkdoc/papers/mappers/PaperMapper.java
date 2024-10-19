@@ -21,7 +21,7 @@ public interface PaperMapper {
 
     PaperResponseDTO toPaperResponseDTO(Paper paper);
 
-    @Mapping(source = "uploaderId", target = "uploader", qualifiedByName = "mapUploaderIdToUploader")
+    @Mapping(source = "uploader", target = "uploader", qualifiedByName = "mapUploaderIdToUploader")
     @Mapping(source = "keywords", target = "keywords", qualifiedByName = "mapKeywordsStringsToKeywords")
     Paper toPaper(PaperCreateDTO paperCreateDTO, @Context UserRepository userRepository, @Context KeywordRepository keywordRepository);
 
