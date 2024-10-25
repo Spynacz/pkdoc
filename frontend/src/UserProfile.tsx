@@ -1,14 +1,9 @@
-import {makeUseAxios} from "axios-hooks";
 import {Card, Pagination} from "flowbite-react";
-import {ReactElement, useCallback, useEffect, useState} from "react";
-import axiosInstance from "./AxiosConfig";
+import {ReactElement} from "react";
 import FilterMenu from "./FilterMenu";
 import {PaperType} from "./PaperType";
-import {useUser} from "./useUser";
-
-const useAxios = makeUseAxios({
-    axios: axiosInstance,
-});
+import useFilters from "./hooks/useFilters";
+import {useUser} from "./hooks/useUser";
 
 interface Paper {
     id: number;
@@ -21,48 +16,11 @@ interface Paper {
     keywords: string;
 }
 
-interface FilterParams {
-    title?: string;
-    authors?: string;
-    fromDate?: string;
-    toDate?: string;
-    keywords?: string;
-    types?: PaperType[];
-}
-
 export default function UserProfile(): ReactElement {
-    const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
     const {id} = useUser();
-    const [filterParams, setFilterParams] = useState<FilterParams>({});
 
-    const [{data}, fetchLatestPapers] = useAxios({
-        url: "/api/papers",
-        params: {
-            user: id,
-            page,
-            size: 10,
-            sort: "publishDate",
-            order: "desc",
-            ...filterParams,
-            types: filterParams.types
-                ?.map((type) => type.toLowerCase())
-                .join(","),
-        },
-    });
-
-    const onPageChange = (page: number) => setPage(page - 1);
-
-    const handleFilterChange = useCallback((filters: FilterParams) => {
-        setFilterParams(filters);
-        setPage(0);
-    }, []);
-
-    useEffect(() => {
-        fetchLatestPapers()
-            .then((data) => setTotalPages(data.data.totalPages))
-            .catch((err) => console.error(err));
-    }, [fetchLatestPapers]);
+    const {data, page, totalPages, onPageChange, handleFilterChange} =
+        useFilters(id);
 
     return (
         <div className="flex h-[calc(100vh-63px)] flex-row">

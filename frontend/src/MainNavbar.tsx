@@ -13,12 +13,7 @@ import {
 import {ReactElement, useState, useEffect} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import axiosInstance from "./AxiosConfig";
-import {useUser} from "./useUser";
-
-interface User {
-    email: string;
-    picture: string;
-}
+import {useUser} from "./hooks/useUser";
 
 function UserDropdown() {
     const {email, logout} = useUser();

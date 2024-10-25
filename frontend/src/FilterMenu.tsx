@@ -1,24 +1,14 @@
-import {makeUseAxios} from "axios-hooks";
 import {Checkbox, FloatingLabel, Label} from "flowbite-react";
-import axiosInstance from "./AxiosConfig";
+import {ReactElement, useEffect, useState} from "react";
 import {PaperType} from "./PaperType";
-import {ReactElement, useState, useEffect} from "react";
-
-const useAxios = makeUseAxios({
-    axios: axiosInstance,
-});
-
-interface Keyword {
-    id: number;
-    text: string;
-}
+import useDebounce from "./hooks/useDebounce";
 
 interface FilterParams {
     title?: string;
     authors?: string;
     fromDate?: string;
     toDate?: string;
-    keywords?: string;
+    keywords?: string[];
     types?: PaperType[];
 }
 
@@ -27,107 +17,112 @@ export default function FilterMenu({
 }: {
     onFilterChange: (filters: FilterParams) => void;
 }): ReactElement {
-    const [title, setTitle] = useState("");
-    const [authors, setAuthors] = useState("");
-    const [fromDate, setFromDate] = useState("");
-    const [toDate, setToDate] = useState("");
-    const [keywords, setKeywords] = useState();
-    const [checkedTypes, setCheckedTypes] = useState<
-        Record<PaperType, boolean>
-    >({} as Record<PaperType, boolean>);
+    const [filters, setFilters] = useState({
+        title: "",
+        authors: "",
+        fromDate: "",
+        toDate: "",
+        keywords: [] as string[],
+        checkedTypes: {} as Record<PaperType, boolean>,
+    });
 
-    //const [{data, error}, fetchKeywords] = useAxios({
-    //    url: "/api/keywords",
-    //});
-    //
-    //useEffect(() => {
-    //    fetchKeywords();
-    //}, [fetchKeywords]);
+    const debouncedFilters = useDebounce(filters, 200);
 
-    useEffect(() => {
-        const selectedTypes = Object.keys(checkedTypes)
-            .filter((key) => checkedTypes[key as PaperType]) // only include checked types
-            .map((key) => key as PaperType);
-
-        const filters: FilterParams = {
-            title,
-            authors,
-            fromDate,
-            toDate,
-            keywords,
-            types: selectedTypes,
-        };
-
-        onFilterChange(filters);
-    }, [authors, checkedTypes, fromDate, keywords, onFilterChange, title, toDate]);
-
-    const handleFromDateChange = (
-        event: React.ChangeEvent<HTMLInputElement>,
-    ): void => {
-        const selectedDate = event.target.value;
-        setFromDate(selectedDate);
-
-        if (toDate && selectedDate > toDate) {
-            setToDate("");
-        }
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target;
+        setFilters((prev) => ({...prev, [name]: value}));
     };
 
-    const handleToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedDate = event.target.value;
-        setToDate(selectedDate);
+    const handleKeywordsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFilters((prev) => ({
+            ...prev,
+            keywords: e.target.value.split(",").map((k) => k.trim()),
+        }));
     };
 
     const handleCheckboxChange = (type: PaperType) => {
-        setCheckedTypes((prevCheckedTypes) => ({
-            ...prevCheckedTypes,
-            [type]: !prevCheckedTypes[type],
+        setFilters((prev) => ({
+            ...prev,
+            checkedTypes: {
+                ...prev.checkedTypes,
+                [type]: !prev.checkedTypes[type], // Toggle the checkbox state
+            },
         }));
     };
+
+    useEffect(() => {
+        const selectedTypes = Object.keys(debouncedFilters.checkedTypes)
+            .filter((key) => debouncedFilters.checkedTypes[key as PaperType])
+            .map((key) => key as PaperType);
+
+        const filtersss: FilterParams = {
+            title: debouncedFilters.title,
+            authors: debouncedFilters.authors,
+            fromDate: debouncedFilters.fromDate,
+            toDate: debouncedFilters.toDate,
+            keywords: debouncedFilters.keywords,
+            types: selectedTypes,
+        };
+
+        onFilterChange(filtersss);
+    }, [
+        debouncedFilters.authors,
+        debouncedFilters.checkedTypes,
+        debouncedFilters.fromDate,
+        debouncedFilters.keywords,
+        debouncedFilters.title,
+        debouncedFilters.toDate,
+        onFilterChange,
+    ]);
 
     return (
         <div className="m-4 flex h-[calc(100vh-97px)] flex-col gap-3 overflow-scroll rounded-lg border border-gray-200 bg-white p-5 shadow-md dark:border-gray-700 dark:bg-gray-800">
             <FloatingLabel
                 label="Title"
+                name="title"
                 variant="filled"
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={filters.title}
+                onChange={handleInputChange}
                 className="rounded-md"
             />
 
             <FloatingLabel
                 label="Authors"
+                name="authors"
                 variant="filled"
                 type="text"
-                value={authors}
-                onChange={(e) => setAuthors(e.target.value)}
+                value={filters.authors}
+                onChange={handleInputChange}
                 className="rounded-md"
             />
 
-            <div className="flex flex-row gap-2">
-                <FloatingLabel
-                    label="Published date from"
-                    variant="filled"
-                    type="date"
-                    value={fromDate}
-                    onChange={handleFromDateChange}
-                    className="rounded-md"
-                />
-                <FloatingLabel
-                    label="Published date to"
-                    variant="filled"
-                    type="date"
-                    value={toDate}
-                    min={fromDate}
-                    onChange={handleToDateChange}
-                    className="rounded-md"
-                />
-            </div>
+            <FloatingLabel
+                label="Published date from"
+                name="fromDate"
+                variant="filled"
+                type="date"
+                value={filters.fromDate}
+                onChange={handleInputChange}
+                className="rounded-md"
+            />
+
+            <FloatingLabel
+                label="Published date to"
+                name="toDate"
+                variant="filled"
+                type="date"
+                value={filters.toDate}
+                min={filters.fromDate}
+                onChange={handleInputChange}
+                className="rounded-md"
+            />
 
             <FloatingLabel
                 label="Keywords"
                 variant="filled"
                 type="text"
+                onChange={handleKeywordsChange}
                 className="rounded-md"
             />
 
@@ -138,8 +133,8 @@ export default function FilterMenu({
                         <div key={type} className="flex items-center gap-2">
                             <Checkbox
                                 id={type}
-                                checked={!!checkedTypes[type]} // Make sure it's either true or false
-                                onChange={() => handleCheckboxChange(type)} // Update the state on change
+                                checked={!!filters.checkedTypes[type]}
+                                onChange={() => handleCheckboxChange(type)}
                             />
                             <Label htmlFor={type} className="flex">
                                 {type}
@@ -151,4 +146,3 @@ export default function FilterMenu({
         </div>
     );
 }
-// <div>{data?.map((keyword: Keyword) => <p>{keyword.text}</p>)}</div>

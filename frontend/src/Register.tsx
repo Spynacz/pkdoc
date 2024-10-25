@@ -1,10 +1,10 @@
 import {Button, Label, TextInput} from "flowbite-react";
 import {useState, type ReactElement} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import {useUser} from "./useUser";
+import {useUser} from "./hooks/useUser";
 
 interface RegisterResponse {
-    id: string;
+    id: number;
     email: string;
     refreshToken: string;
     token: string;
