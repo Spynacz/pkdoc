@@ -6,8 +6,8 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class PaperSpec {
@@ -20,21 +20,24 @@ public class PaperSpec {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> typePredicates = new ArrayList<>();
             for (String type : types) {
-                typePredicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("type")), type.toString().toLowerCase()));
+                typePredicates.add(
+                        criteriaBuilder.equal(criteriaBuilder.lower(root.get("type")), type.toString().toLowerCase()));
             }
             return criteriaBuilder.or(typePredicates.toArray(new Predicate[0]));
         };
     }
 
     public static Specification<Paper> hasTitle(String title) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%");
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(criteriaBuilder.lower(root.get("title")),
+                                                                      "%" + title.toLowerCase() + "%");
     }
 
     public static Specification<Paper> hasAuthors(List<String> authors) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> authorPredicates = new ArrayList<>();
             for (String author : authors) {
-                authorPredicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("authors")), "%" + author.toLowerCase() + "%"));
+                authorPredicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("authors")),
+                                                          "%" + author.toLowerCase() + "%"));
             }
             return criteriaBuilder.or(authorPredicates.toArray(new Predicate[0]));
         };
@@ -57,5 +60,18 @@ public class PaperSpec {
 
             return criteriaBuilder.or(keywordPredicates.toArray(new Predicate[0]));
         };
+    }
+
+    public static Specification<Paper> hasDate(LocalDate startDate, LocalDate endDate) {
+        if (startDate != null && endDate != null) {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.between(root.get("publishDate"), startDate, endDate);
+        }
+        if (startDate != null) {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("publishDate"), startDate);
+        }
+        if (endDate != null) {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("publishDate"), endDate);
+        }
+        return null;
     }
 }

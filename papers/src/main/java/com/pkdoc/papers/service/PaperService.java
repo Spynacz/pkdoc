@@ -44,7 +44,7 @@ public class PaperService {
         if (queryParams.getTypes() != null && !queryParams.getTypes().isEmpty()) {
             spec = spec.and(PaperSpec.hasTypes(queryParams.getTypes()));
         }
-        if (!queryParams.getTitle().isEmpty()) {
+        if (queryParams.getTitle() != null && !queryParams.getTitle().isEmpty()) {
             spec = spec.and(PaperSpec.hasTitle(queryParams.getTitle()));
         }
         if (queryParams.getAuthors() != null && !queryParams.getAuthors().isEmpty()) {
@@ -52,6 +52,9 @@ public class PaperService {
         }
         if (queryParams.getKeywords() != null && !queryParams.getKeywords().isEmpty()) {
             spec = spec.and(PaperSpec.hasKeywords(queryParams.getKeywords()));
+        }
+        if (queryParams.getFromDate() != null || queryParams.getToDate() != null) {
+            spec = spec.and(PaperSpec.hasDate(queryParams.getFromDate(), queryParams.getToDate()));
         }
 
         Page<Paper> papers = paperRepository.findAll(spec, pageable);

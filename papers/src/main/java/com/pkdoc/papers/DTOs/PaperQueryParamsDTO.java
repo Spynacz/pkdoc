@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -22,4 +22,6 @@ public class PaperQueryParamsDTO {
     private List<String> types;
     private List<String> authors;
     private List<String> keywords;
+    private LocalDate fromDate;
+    private LocalDate toDate;
 }
