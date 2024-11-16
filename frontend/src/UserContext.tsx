@@ -3,6 +3,7 @@ import {createContext, ReactNode, useEffect, useState} from "react";
 export const UserContext = createContext({
     id: -1,
     email: "",
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     login: (id: number, email: string) => {},
     logout: () => {},
 });
