@@ -19,10 +19,12 @@ public interface UserMapper {
     @Mapping(target = "role", ignore = true)
     User registerToUser(RegisterDTO registerDTO);
 
+    @Mapping(target = "password", ignore = true)
     UserDTO registerToUserDTO(RegisterDTO registerDTO);
 
     @Mapping(target = "role", ignore = true) // TODO: figure out role
     User toUser(UserDTO userDTO);
 
+    @Mapping(target = "userId", source = "id")
     AuthResponseDTO toAuthResponseDTO(UserDTO userDTO);
 }
