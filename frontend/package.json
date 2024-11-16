@@ -10,6 +10,9 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@tabler/core": "^1.0.0-beta21",
+        "@tabler/icons": "^3.21.0",
+        "@tabler/icons-react": "^3.21.0",
         "axios": "^1.7.7",
         "axios-hooks": "^5.0.2",
         "flowbite": "^2.5.1",
@@ -40,6 +43,8 @@
     },
     "prettier": {
         "tabWidth": 4,
-        "bracketSpacing": false
+        "bracketSpacing": false,
+        "trailingComma": "none",
+        "printWidth": 120
     }
 }

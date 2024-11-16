@@ -3,6 +3,11 @@ import {useCallback, useEffect, useState} from "react";
 import axiosInstance from "../AxiosConfig";
 import {PaperType} from "../PaperType";
 
+export enum SortOrder {
+    ASC = "asc",
+    DESC = "desc"
+}
+
 const useAxios = makeUseAxios({
     axios: axiosInstance,
 });
@@ -16,10 +21,19 @@ interface FilterParams {
     types?: PaperType[];
 }
 
+interface Sorting {
+    sort: string;
+    order: SortOrder;
+}
+
 function useFilters(userId?: number) {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [filterParams, setFilterParams] = useState<FilterParams>({});
+    const [sorting, setSorting] = useState({
+        sort: "",
+        order: "",
+    });
 
     const cleanFilterParams = (params: FilterParams) => {
         return Object.fromEntries(
@@ -37,14 +51,14 @@ function useFilters(userId?: number) {
 
     const cleanParams: Partial<FilterParams> = cleanFilterParams(filterParams);
 
-    const [{data}, fetchLatestPapers] = useAxios({
+    const [{data}, fetchPapers] = useAxios({
         url: "/api/papers",
         params: {
             page,
             user: userId,
             size: 10,
-            sort: "publishDate",
-            order: "desc",
+            sort: sorting.sort,
+            order: sorting.order,
             ...cleanParams,
             keywords: cleanParams.keywords
                 ?.map((keyword) => keyword.toLowerCase())
@@ -58,18 +72,19 @@ function useFilters(userId?: number) {
     const onPageChange = useCallback((page: number) => setPage(page - 1), []);
 
     const handleFilterChange = useCallback(
-        (filters: FilterParams) => {
+        (filters: FilterParams, sorting: Sorting) => {
             setFilterParams(filters);
+            setSorting(sorting)
             setPage(0);
         },
         [setFilterParams],
     );
 
     useEffect(() => {
-        fetchLatestPapers()
+        fetchPapers()
             .then((data) => setTotalPages(data.data.totalPages))
             .catch((err) => console.error(err));
-    }, [fetchLatestPapers]);
+    }, [fetchPapers]);
 
     return {data, page, totalPages, onPageChange, handleFilterChange};
 }
