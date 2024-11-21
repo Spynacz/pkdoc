@@ -4,12 +4,12 @@ import {useUser} from "./hooks/useUser";
 import PapersList from "./PapersList";
 
 export default function UserProfile(): ReactElement {
-    const {id} = useUser();
+    const {userId} = useUser();
 
     return (
         <>
-            <PapersList userId={id} />
             <CreateButton />
+            <PapersList userId={userId} />
         </>
     );
 }

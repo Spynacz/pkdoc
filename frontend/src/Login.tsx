@@ -4,7 +4,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {useUser} from "./hooks/useUser";
 
 interface LoginResponse {
-    id: number;
+    userId: number;
     email: string;
     token: string;
     refreshToken: string;
@@ -37,7 +37,7 @@ export default function Login(): ReactElement {
                 return data;
             })
             .then((data) => {
-                login(data.id, data.email);
+                login(data.userId, data.email);
                 sessionStorage.setItem("token", data.token);
                 localStorage.setItem("refreshToken", data.refreshToken);
                 navigate("/");
