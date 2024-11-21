@@ -34,8 +34,8 @@ export default function PapersList(props: PapersListProps): ReactElement {
                     {menuOpen ? "Close" : "Filters"}
                 </Button>
 
-                <div className="w-screen overflow-auto">
-                    <div className="m-auto mt-4 flex min-w-0 max-w-screen-lg flex-col space-y-1 sm:space-y-4">
+                <div className="w-screen overflow-auto flex justify-center">
+                    <div className="mt-4 mr-1 ml-1 sm:ml-4 sm:mr-4 flex min-w-0 max-w-screen-lg flex-col space-y-1 sm:space-y-4">
                         {data?.content?.map((paper: Paper) => (
                             <Card key={paper.id}>
                                 <div className="flex flex-row justify-between">
@@ -55,7 +55,7 @@ export default function PapersList(props: PapersListProps): ReactElement {
                                 </div>
                             </Card>
                         ))}
-                        <div className="flex justify-center overflow-x-auto pb-5">
+                        <div className="flex justify-center min-h-16">
                             <Pagination
                                 currentPage={page + 1}
                                 totalPages={totalPages}

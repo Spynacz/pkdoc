@@ -102,7 +102,7 @@ export default function FilterMenu({
     ]);
 
     return (
-        <div className="m-4 flex h-[calc(100vh-97px)] flex-col gap-3 overflow-scroll rounded-lg border border-gray-200 bg-white p-5 shadow-md dark:border-gray-700 dark:bg-gray-800">
+        <div className="m-4 mr-0 flex h-[calc(100vh-97px)] flex-col gap-3 overflow-scroll rounded-lg border border-gray-200 bg-white p-5 shadow-md dark:border-gray-700 dark:bg-gray-800">
             <div className="mb-5 flex flex-col">
                 <Label htmlFor="sorting" value="Sort by" />
                 <div className="flex flex-row items-center">
