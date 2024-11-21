@@ -2,6 +2,7 @@ package com.pkdoc.papers.controller;
 
 import com.pkdoc.papers.DTOs.AuthResponseDTO;
 import com.pkdoc.papers.DTOs.LoginDTO;
+import com.pkdoc.papers.DTOs.RefreshTokenDTO;
 import com.pkdoc.papers.DTOs.RegisterDTO;
 import com.pkdoc.papers.config.JwtAuthProvider;
 import com.pkdoc.papers.service.AuthService;
@@ -42,17 +43,9 @@ public class AuthController {
         return ResponseEntity.ok().body(authResponse);
     }
 
-//    @PostMapping("/refresh")
-//    public ResponseEntity<AuthResponseDTO> refresh(@RequestBody @Valid RefreshTokenDTO refreshTokenDTO) {
-//        String email = jwtAuthProvider.extractEmail(refreshTokenDTO.getToken());
-//
-//        String newToken = jwtAuthProvider.createToken(email);
-//        String newRefreshToken = jwtAuthProvider.createRefreshToken(email);
-//
-//        AuthResponseDTO authResponse = authService.refresh(refreshTokenDTO.getToken());
-//        authResponse.setToken(newToken);
-//        authResponse.setRefreshToken(newRefreshToken);
-//
-//        return ResponseEntity.ok().body(authResponse);
-//    }
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponseDTO> refresh(@RequestBody @Valid RefreshTokenDTO refreshTokenDTO) {
+        AuthResponseDTO authResponse = authService.refresh(refreshTokenDTO.getToken());
+        return ResponseEntity.ok().body(authResponse);
+    }
 }

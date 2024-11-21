@@ -1,5 +1,6 @@
 package com.pkdoc.papers.service;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.pkdoc.papers.DTOs.AuthResponseDTO;
 import com.pkdoc.papers.DTOs.LoginDTO;
 import com.pkdoc.papers.DTOs.RegisterDTO;
@@ -50,21 +51,21 @@ public class AuthService {
         return getAuthResponseDTO(savedUser);
     }
 
-//    public AuthResponseDTO refresh(String refreshToken) {
-////        if (!userAuthProvider.validateRefreshToken(refreshToken)) {
-////            throw new JWTVerificationException("Invalid refresh token");
-////        }
-//
-//        String email = jwtAuthProvider.extractEmail(refreshToken);
-//        UserDTO user = userService.findByEmail(email)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        AuthResponseDTO authResponse = userMapper.toAuthResponseDTO(user);
-//        authResponse.setToken(jwtAuthProvider.createToken(email));
-//        authResponse.setRefreshToken(jwtAuthProvider.createRefreshToken(email));
-//
-//        return authResponse;
-//    }
+    public AuthResponseDTO refresh(String refreshToken) {
+        if (!jwtAuthProvider.validateRefreshToken(refreshToken)) {
+            throw new JWTVerificationException("Invalid refresh token");
+        }
+
+        String email = jwtAuthProvider.extractSubject(refreshToken);
+        UserDTO user = userService.findByEmail(email)
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
+
+        AuthResponseDTO authResponse = userMapper.toAuthResponseDTO(user);
+        authResponse.setToken(jwtAuthProvider.createToken(email));
+        authResponse.setRefreshToken(jwtAuthProvider.createRefreshToken(email));
+
+        return authResponse;
+    }
 
     private AuthResponseDTO getAuthResponseDTO(UserDTO user) {
         String token = jwtAuthProvider.createToken(user.getEmail());

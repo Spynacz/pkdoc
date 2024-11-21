@@ -73,5 +73,19 @@ public class JwtAuthProvider {
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }
 
-    // validateRefreshToken???
+    // WARN: UNFINISHED METHOD - DOESN'T ACTUALLY VERIFY MUCH
+    public boolean validateRefreshToken(String token) {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey)).build();
+        DecodedJWT decoded = verifier.verify(token);
+
+        // TODO: add checking if refresh token wasn't reused
+
+        return decoded.getIssuedAt().getTime() < new Date().getTime();
+    }
+
+    public String extractSubject(String token) {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey)).build();
+        DecodedJWT decoded = verifier.verify(token);
+        return decoded.getSubject();
+    }
 }
