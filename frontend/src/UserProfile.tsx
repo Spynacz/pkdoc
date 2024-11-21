@@ -8,8 +8,8 @@ export default function UserProfile(): ReactElement {
 
     return (
         <>
-            <CreateButton />
             <PapersList userId={userId} />
+            <CreateButton />
         </>
     );
 }

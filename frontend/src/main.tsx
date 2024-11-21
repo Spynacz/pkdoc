@@ -3,6 +3,7 @@ import {CookiesProvider} from "react-cookie";
 import ReactDOM from "react-dom/client";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import App from "./App.tsx";
+import Create from "./Create.tsx";
 import ErrorPage from "./ErrorPage.tsx";
 import Home from "./Home.tsx";
 import "./index.css";
@@ -18,22 +19,26 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "",
-                element: <Home />,
+                element: <Home />
             },
             {
                 path: "/login",
-                element: <Login />,
+                element: <Login />
             },
             {
                 path: "/register",
-                element: <Register />,
+                element: <Register />
             },
             {
                 path: "/profile",
-                element: <UserProfile />,
+                element: <UserProfile />
             },
-        ],
-    },
+            {
+                path: "/create",
+                element: <Create />
+            }
+        ]
+    }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -41,5 +46,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <CookiesProvider defaultSetOptions={{path: "/"}}>
             <RouterProvider router={router} />
         </CookiesProvider>
-    </React.StrictMode>,
+    </React.StrictMode>
 );
