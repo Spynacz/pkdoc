@@ -1,3 +1,7 @@
 {
-  "plugins": ["prettier-plugin-tailwindcss"]
+    "tabWidth": 4,
+    "bracketSpacing": false,
+    "trailingComma": "none",
+    "printWidth": 120,
+    "plugins": ["prettier-plugin-tailwindcss"]
 }

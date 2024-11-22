@@ -6,5 +6,5 @@ export enum PaperType {
     PROJECT = "Project",
     PATENT = "Patent",
     JOURNAL = "Journal",
-    CONFERENCE_PAPER = "Conference paper",
+    CONFERENCE_PAPER = "Conference paper"
 }

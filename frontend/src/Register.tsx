@@ -31,9 +31,9 @@ export default function Register(): ReactElement {
             method: "POST",
             body: JSON.stringify({
                 email: email,
-                password: password,
+                password: password
             }),
-            headers: {"Content-type": "application/json; charset=UTF-8"},
+            headers: {"Content-type": "application/json; charset=UTF-8"}
         })
             .then((response) => {
                 if (!response.ok) {
@@ -56,9 +56,7 @@ export default function Register(): ReactElement {
     return (
         <div className="my-auto flex min-w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
             <div className="w-full max-w-md space-y-4 rounded bg-white p-8 shadow-md dark:bg-gray-900">
-                <h2 className="text-center text-2xl font-bold text-black dark:text-white">
-                    Register
-                </h2>
+                <h2 className="text-center text-2xl font-bold text-black dark:text-white">Register</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <Label htmlFor="email" value="Email" />
@@ -93,9 +91,7 @@ export default function Register(): ReactElement {
                             required={true}
                         />
                     </div>
-                    {error && (
-                        <div className="text-center text-red-500">{error}</div>
-                    )}
+                    {error && <div className="text-center text-red-500">{error}</div>}
                     <Button type="submit" fullSized>
                         Register
                     </Button>

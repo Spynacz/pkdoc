@@ -9,7 +9,7 @@ export enum SortOrder {
 }
 
 const useAxios = makeUseAxios({
-    axios: axiosInstance,
+    axios: axiosInstance
 });
 
 interface FilterParams {
@@ -32,7 +32,7 @@ function useFilters(userId?: number) {
     const [filterParams, setFilterParams] = useState<FilterParams>({});
     const [sorting, setSorting] = useState({
         sort: "",
-        order: "",
+        order: ""
     });
 
     const cleanFilterParams = (params: FilterParams) => {
@@ -45,7 +45,7 @@ function useFilters(userId?: number) {
                     return value.length > 0;
                 }
                 return value !== "undefined";
-            }),
+            })
         );
     };
 
@@ -60,13 +60,9 @@ function useFilters(userId?: number) {
             sort: sorting.sort,
             order: sorting.order,
             ...cleanParams,
-            keywords: cleanParams.keywords
-                ?.map((keyword) => keyword.toLowerCase())
-                .join(","),
-            types: cleanParams.types
-                ?.map((type) => type.toLowerCase())
-                .join(","),
-        },
+            keywords: cleanParams.keywords?.map((keyword) => keyword.toLowerCase()).join(","),
+            types: cleanParams.types?.map((type) => type.toLowerCase()).join(",")
+        }
     });
 
     const onPageChange = useCallback((page: number) => setPage(page - 1), []);
@@ -74,10 +70,10 @@ function useFilters(userId?: number) {
     const handleFilterChange = useCallback(
         (filters: FilterParams, sorting: Sorting) => {
             setFilterParams(filters);
-            setSorting(sorting)
+            setSorting(sorting);
             setPage(0);
         },
-        [setFilterParams],
+        [setFilterParams]
     );
 
     useEffect(() => {

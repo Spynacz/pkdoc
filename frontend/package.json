@@ -40,11 +40,5 @@
         "tailwindcss": "^3.4.7",
         "typescript": "^5.2.2",
         "vite": "^5.4.11"
-    },
-    "prettier": {
-        "tabWidth": 4,
-        "bracketSpacing": false,
-        "trailingComma": "none",
-        "printWidth": 120
     }
 }

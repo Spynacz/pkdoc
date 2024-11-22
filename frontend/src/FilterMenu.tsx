@@ -114,14 +114,14 @@ export default function FilterMenu({
                         <IconArrowUp
                             stroke={1.75}
                             size={30}
-                            className="ml-2 text-gray-700 dark:text-gray-300 rotate-0 duration-200"
+                            className="ml-2 rotate-0 text-gray-700 duration-200 dark:text-gray-300"
                             onClick={handleSortOrderChange}
                         />
                     ) : (
                         <IconArrowUp
                             stroke={1.75}
                             size={30}
-                            className="ml-2 text-gray-700 dark:text-gray-300 rotate-180 duration-200"
+                            className="ml-2 rotate-180 text-gray-700 duration-200 dark:text-gray-300"
                             onClick={handleSortOrderChange}
                         />
                     )}
