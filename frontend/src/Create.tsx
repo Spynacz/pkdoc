@@ -1,30 +1,63 @@
-import {Button, Checkbox, Label, Textarea, TextInput} from "flowbite-react";
+import {makeUseAxios} from "axios-hooks";
+import {Button, Datepicker, Label, Select, Textarea, TextInput} from "flowbite-react";
 import {FormEvent, ReactElement, useState} from "react";
-import {Link} from "react-router-dom";
+import axiosInstance from "./AxiosConfig";
+import {useUser} from "./hooks/useUser";
+
+const useAxios = makeUseAxios({
+    axios: axiosInstance
+});
 
 export default function Create(): ReactElement {
     const [title, setTitle] = useState("");
     const [authors, setAuthors] = useState("");
     const [abstract, setAbstract] = useState("");
+    const [date, setDate] = useState("");
+    const {userId} = useUser();
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>): void {
-        throw new Error("Function not implemented.");
-    }
+    const [{data, error}, postPaper] = useAxios(
+        {
+            url: "/api/papers",
+            method: "POST"
+        },
+        {manual: true}
+    );
+
+    const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+        event.preventDefault();
+
+        postPaper({
+            data: {
+                title: title,
+                authors: authors,
+                abstract: abstract,
+                publishDate: date,
+                uploader: userId
+            }
+        });
+    };
 
     return (
         <div className="my-auto flex min-w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
-            <div className="w-full max-w-md space-y-4 rounded bg-white p-8 shadow-md dark:bg-gray-900">
-                <h2 className="text-center text-2xl font-bold text-black dark:text-white">Add new paper</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="w-full min-w-fit max-w-5xl space-y-4 rounded bg-white p-8 shadow-md dark:bg-gray-900">
+                <h2 className="text-center text-2xl font-bold text-black dark:text-white">Add new publication</h2>
+                <form onSubmit={handleSubmit} className="min-w-56 space-y-6">
+                    <div>
+                        <Label htmlFor="type" value="Publication type" />
+                        <Select id="type" required className="mt-1">
+                            <option>Article</option>
+                            <option>Book</option>
+                            <option>Chapter</option>
+                        </Select>
+                    </div>
                     <div>
                         <Label htmlFor="title" value="Title" />
                         <TextInput
                             id="title"
                             type="text"
-                            placeholder="Title"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required={true}
+                            onChange={(event) => setTitle(event.target.value)}
+                            required
                         />
                     </div>
                     <div>
@@ -32,19 +65,28 @@ export default function Create(): ReactElement {
                         <TextInput
                             id="authors"
                             type="text"
-                            placeholder="Authors"
                             value={authors}
-                            onChange={(e) => setAuthors(e.target.value)}
-                            required={true}
+                            onChange={(event) => setAuthors(event.target.value)}
+                            required
                         />
                     </div>
                     <div>
                         <Label htmlFor="abstract" value="Abstract" />
                         <Textarea
                             id="abstract"
-                            placeholder="Abstract"
+                            rows={4}
                             value={abstract}
-                            onChange={(e) => setAbstract(e.target.value)}
+                            onChange={(event) => setAbstract(event.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="date" value="Published date" />
+                        <Datepicker
+                            id="date"
+                            weekStart={1}
+                            required
+                            value={date}
+                            onSelectedDateChanged={(date) => setDate(date.toISOString().substring(0, 10))}
                         />
                     </div>
                     <Button type="submit" fullSized>

@@ -33,6 +33,9 @@ public interface PaperMapper {
 
     @Named("mapKeywordsStringsToKeywords")
     default Set<Keyword> mapKeywordsStringsToKeywords(Set<String> keywords, @Context KeywordRepository keywordRepository) {
+        if (keywords == null || keywords.isEmpty()) {
+            return null;
+        }
         return keywords.stream().map(k -> keywordRepository.findByText(k).orElseGet(() -> {
             Keyword keyword = new Keyword();
             keyword.setText(k);
