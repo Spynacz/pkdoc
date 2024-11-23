@@ -32,7 +32,7 @@ function useFilters(userId?: number) {
     const [filterParams, setFilterParams] = useState<FilterParams>({});
     const [sorting, setSorting] = useState({
         sort: "",
-        order: ""
+        order: "asc"
     });
 
     const cleanFilterParams = (params: FilterParams) => {
@@ -51,19 +51,22 @@ function useFilters(userId?: number) {
 
     const cleanParams: Partial<FilterParams> = cleanFilterParams(filterParams);
 
-    const [{data}, fetchPapers] = useAxios({
-        url: "/api/papers",
-        params: {
-            page,
-            user: userId,
-            size: 10,
-            sort: sorting.sort,
-            order: sorting.order,
-            ...cleanParams,
-            keywords: cleanParams.keywords?.map((keyword) => keyword.toLowerCase()).join(","),
-            types: cleanParams.types?.map((type) => type.toLowerCase()).join(",")
-        }
-    });
+    const [{data, loading, error}, fetchPapers] = useAxios(
+        {
+            url: "/api/papers",
+            params: {
+                page,
+                user: userId,
+                size: 10,
+                sort: sorting.sort,
+                order: sorting.order,
+                ...cleanParams,
+                keywords: cleanParams.keywords?.map((keyword) => keyword.toLowerCase()).join(","),
+                types: cleanParams.types?.map((type) => type.toLowerCase()).join(",")
+            }
+        },
+        {manual: true}
+    );
 
     const onPageChange = useCallback((page: number) => setPage(page - 1), []);
 
@@ -79,10 +82,15 @@ function useFilters(userId?: number) {
     useEffect(() => {
         fetchPapers()
             .then((data) => setTotalPages(data.data.totalPages))
-            .catch((err) => console.error(err));
+            .catch((error) => {
+                // react strict mode in development calls useEffect twice, the first request gets immediately canceled
+                if (error.code === "ERR_CANCELED") {
+                    return Promise.resolve({status: 499});
+                }
+            });
     }, [fetchPapers]);
 
-    return {data, page, totalPages, onPageChange, handleFilterChange};
+    return {data, loading, error, page, totalPages, onPageChange, handleFilterChange};
 }
 
 export default useFilters;
