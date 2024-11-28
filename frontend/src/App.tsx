@@ -1,6 +1,6 @@
 import {Flowbite} from "flowbite-react";
 import {ReactElement} from "react";
-import {Outlet} from "react-router-dom";
+import {Outlet} from "react-router";
 import {UserProvider} from "./UserContext";
 import MainNavbar from "./MainNavbar";
 

@@ -1,6 +1,6 @@
 import {Button} from "flowbite-react";
 import {ReactElement} from "react";
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 
 export default function CreateButton(): ReactElement {
     return (

@@ -49,4 +49,5 @@ const refreshAccessToken = async (): Promise<RefreshResponse> => {
     };
     return axios.post("/api/refresh", {token: localStorage.getItem("refreshToken")}, config);
 };
+
 export default axiosInstance;
