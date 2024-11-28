@@ -3,13 +3,13 @@ import {CookiesProvider} from "react-cookie";
 import ReactDOM from "react-dom/client";
 import {createBrowserRouter, RouterProvider} from "react-router";
 import App from "./App.tsx";
+import Login from "./components/User/Login.tsx";
+import Register from "./components/User/Register.tsx";
+import UserProfile from "./components/User/UserProfile.tsx";
 import Create from "./Create.tsx";
 import ErrorPage from "./ErrorPage.tsx";
 import Home from "./Home.tsx";
 import "./index.css";
-import Login from "./Login.tsx";
-import Register from "./Register.tsx";
-import UserProfile from "./UserProfile.tsx";
 
 const router = createBrowserRouter([
     {

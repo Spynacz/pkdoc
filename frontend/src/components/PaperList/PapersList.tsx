@@ -1,8 +1,8 @@
-import {Button, Card, Pagination} from "flowbite-react";
+import {Button, Pagination} from "flowbite-react";
 import {ReactElement, useState} from "react";
+import useFilters from "../../hooks/useFilters";
+import {Paper} from "../../types/Paper";
 import FilterMenu from "./FilterMenu";
-import useFilters from "./hooks/useFilters";
-import {Paper} from "./Paper";
 import PaperCard from "./PaperCard";
 
 interface PapersListProps {

@@ -1,5 +1,5 @@
 import {ReactElement} from "react";
-import PapersList from "./PapersList";
+import PapersList from "./components/PaperList/PapersList";
 
 export default function Home(): ReactElement {
     return (

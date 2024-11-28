@@ -1,7 +1,7 @@
 import {Button, Checkbox, Label, TextInput} from "flowbite-react";
 import {useState, type ReactElement} from "react";
 import {Link, useNavigate} from "react-router";
-import {useUser} from "./hooks/useUser";
+import {useUser} from "../../hooks/useUser";
 
 interface LoginResponse {
     userId: number;

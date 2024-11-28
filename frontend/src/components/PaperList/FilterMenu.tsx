@@ -1,9 +1,9 @@
 import {IconArrowUp} from "@tabler/icons-react";
 import {Checkbox, FloatingLabel, Label, Select} from "flowbite-react";
 import {ChangeEvent, ReactElement, useEffect, useState} from "react";
-import {PaperType} from "./PaperType";
-import useDebounce from "./hooks/useDebounce";
-import {SortOrder} from "./hooks/useFilters";
+import useDebounce from "../../hooks/useDebounce";
+import {SortOrder} from "../../hooks/useFilters";
+import {PaperType} from "../../types/PaperType";
 
 interface FilterParams {
     title?: string;

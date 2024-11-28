@@ -1,7 +1,7 @@
 import {makeUseAxios} from "axios-hooks";
 import {useCallback, useEffect, useState} from "react";
 import axiosInstance from "../AxiosConfig";
-import {PaperType} from "../PaperType";
+import {PaperType} from "../types/PaperType";
 
 export enum SortOrder {
     ASC = "asc",
