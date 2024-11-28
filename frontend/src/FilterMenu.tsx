@@ -1,5 +1,5 @@
 import {IconArrowUp} from "@tabler/icons-react";
-import {Checkbox, Datepicker, FloatingLabel, Label, Select} from "flowbite-react";
+import {Checkbox, FloatingLabel, Label, Select} from "flowbite-react";
 import {ChangeEvent, ReactElement, useEffect, useState} from "react";
 import {PaperType} from "./PaperType";
 import useDebounce from "./hooks/useDebounce";
@@ -105,7 +105,7 @@ export default function FilterMenu({
         <div className="m-4 mr-0 flex h-[calc(100vh-97px)] w-60 flex-col gap-3 overflow-scroll rounded-lg border border-gray-200 bg-white p-5 shadow-md dark:border-gray-700 dark:bg-gray-800">
             <div className="mb-5 flex flex-col">
                 <Label htmlFor="sorting" value="Sort by" />
-                <div className="flex flex-row justify-between items-center">
+                <div className="flex flex-row items-center justify-between">
                     <Select id="sorting" value={sorting.sort} onChange={handleSortChange} className="w-full">
                         <option value="title">Title</option>
                         <option value="publishDate">Date published</option>

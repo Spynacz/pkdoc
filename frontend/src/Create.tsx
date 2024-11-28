@@ -13,6 +13,7 @@ export default function Create(): ReactElement {
     const [authors, setAuthors] = useState("");
     const [abstract, setAbstract] = useState("");
     const [date, setDate] = useState("");
+    const [doi, setDoi] = useState("");
     const {userId} = useUser();
 
     const [{data, error}, postPaper] = useAxios(
@@ -32,6 +33,7 @@ export default function Create(): ReactElement {
                 authors: authors,
                 abstract: abstract,
                 publishDate: date,
+                doi: doi,
                 uploader: userId
             }
         });
@@ -71,7 +73,7 @@ export default function Create(): ReactElement {
                         />
                     </div>
                     <div>
-                        <Label htmlFor="abstract" value="Abstract" />
+                        <Label htmlFor="abstract" value="Abstract (optional)" />
                         <Textarea
                             id="abstract"
                             rows={4}
@@ -88,6 +90,10 @@ export default function Create(): ReactElement {
                             value={date}
                             onSelectedDateChanged={(date) => setDate(date.toISOString().substring(0, 10))}
                         />
+                    </div>
+                    <div>
+                        <Label htmlFor="doi" value="DOI number (optional)" />
+                        <TextInput id="doi" type="text" value={doi} onChange={(event) => setDoi(event.target.value)} />
                     </div>
                     <Button type="submit" fullSized>
                         Save
