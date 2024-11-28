@@ -1,16 +1,11 @@
-import {makeUseAxios} from "axios-hooks";
 import {useCallback, useEffect, useState} from "react";
-import axiosInstance from "../AxiosConfig";
+import useAxios from "../hooks/useAxios";
 import {PaperType} from "../types/PaperType";
 
 export enum SortOrder {
     ASC = "asc",
     DESC = "desc"
 }
-
-const useAxios = makeUseAxios({
-    axios: axiosInstance
-});
 
 interface FilterParams {
     title?: string;

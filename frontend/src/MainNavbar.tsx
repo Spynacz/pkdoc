@@ -1,28 +1,23 @@
-import {makeUseAxios} from "axios-hooks";
+import useAxios from "./hooks/useAxios";
 import {
-    Navbar,
-    NavbarBrand,
-    DarkThemeToggle,
     Avatar,
+    Button,
+    DarkThemeToggle,
     Dropdown,
+    DropdownDivider,
     DropdownHeader,
     DropdownItem,
-    DropdownDivider,
-    Button
+    Navbar,
+    NavbarBrand
 } from "flowbite-react";
-import {ReactElement, useState, useEffect} from "react";
+import {ReactElement, useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router";
-import axiosInstance from "./AxiosConfig";
 import {useUser} from "./hooks/useUser";
 
 function UserDropdown() {
     const {email, logout} = useUser();
     const [picture, setPicture] = useState(""); // probably temporary
     const navigate = useNavigate();
-
-    const useAxios = makeUseAxios({
-        axios: axiosInstance
-    });
 
     const [{data, loading, error}, refetch] = useAxios(`/api/users/${email}`);
 

@@ -1,12 +1,7 @@
-import {makeUseAxios} from "axios-hooks";
+import useAxios from "./hooks/useAxios";
 import {Button, Datepicker, Label, Select, Textarea, TextInput} from "flowbite-react";
 import {FormEvent, ReactElement, useState} from "react";
-import axiosInstance from "./AxiosConfig";
 import {useUser} from "./hooks/useUser";
-
-const useAxios = makeUseAxios({
-    axios: axiosInstance
-});
 
 export default function Create(): ReactElement {
     const [title, setTitle] = useState("");
