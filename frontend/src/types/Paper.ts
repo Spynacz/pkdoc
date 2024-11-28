@@ -4,10 +4,10 @@ export interface Paper {
     id: number;
     title: string;
     abstractText: string;
-    authors: string;
+    authors: string[];
     publishDate: string; // INFO: should probably be parsed into date
     doi: string;
     privateOnly: boolean;
-    type: PaperType;
+    type: keyof typeof PaperType;
     keywords: string;
 }

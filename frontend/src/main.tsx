@@ -3,6 +3,7 @@ import {CookiesProvider} from "react-cookie";
 import ReactDOM from "react-dom/client";
 import {createBrowserRouter, RouterProvider} from "react-router";
 import App from "./App.tsx";
+import Paper from "./components/Paper/Paper.tsx";
 import Login from "./components/User/Login.tsx";
 import Register from "./components/User/Register.tsx";
 import UserProfile from "./components/User/UserProfile.tsx";
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
             {
                 path: "/create",
                 element: <Create />
+            },
+            {
+                path: "/papers/:id",
+                element: <Paper />
             }
         ]
     }
