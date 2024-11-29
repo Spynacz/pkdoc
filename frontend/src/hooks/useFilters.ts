@@ -1,91 +1,77 @@
 import {useCallback, useEffect, useState} from "react";
-import useAxios from "../hooks/useAxios";
-import {PaperType} from "../types/PaperType";
+import {useSearchParams} from "react-router";
+import useDebounce from "./useDebounce";
 
 export enum SortOrder {
     ASC = "asc",
     DESC = "desc"
 }
 
-interface FilterParams {
+export interface FilterParams {
     title?: string;
     authors?: string;
     fromDate?: string;
     toDate?: string;
     keywords?: string[];
-    types?: PaperType[];
+    types?: string[];
 }
 
-interface Sorting {
+export interface Sorting {
     sort: string;
     order: SortOrder;
 }
 
-function useFilters(userId?: number) {
-    const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
-    const [filterParams, setFilterParams] = useState<FilterParams>({});
-    const [sorting, setSorting] = useState({
-        sort: "",
-        order: "asc"
+function useFilters() {
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [filters, setFilters] = useState<FilterParams>(() => {
+        const query = Object.fromEntries(searchParams.entries());
+        const params: FilterParams = {
+            title: query.title || "",
+            authors: query.authors || "",
+            fromDate: query.fromDate || "",
+            toDate: query.toDate || "",
+            keywords: query.keywords?.split(",") || [],
+            types: query.types?.split(",") || []
+        };
+        return params;
     });
 
-    const cleanFilterParams = (params: FilterParams) => {
-        return Object.fromEntries(
-            Object.entries(params).filter(([, value]) => {
-                if (typeof value === "string") {
-                    return value.trim() !== "";
-                }
-                if (Array.isArray(value)) {
-                    return value.length > 0;
-                }
-                return value !== "undefined";
-            })
-        );
-    };
+    const [sorting, setSorting] = useState<Sorting>(() => {
+        const query = Object.fromEntries(searchParams.entries());
+        const sorting: Sorting = {
+            sort: query.sort || "publishDate",
+            order: (query.order as SortOrder) || SortOrder.DESC
+        };
+        return sorting;
+    });
 
-    const cleanParams: Partial<FilterParams> = cleanFilterParams(filterParams);
-
-    const [{data, loading, error}, fetchPapers] = useAxios(
-        {
-            url: "/api/papers",
-            params: {
-                page,
-                user: userId,
-                size: 10,
-                sort: sorting.sort,
-                order: sorting.order,
-                ...cleanParams,
-                keywords: cleanParams.keywords?.map((keyword) => keyword.toLowerCase()).join(","),
-                types: cleanParams.types?.map((type) => type.toLowerCase()).join(",")
-            }
-        },
-        {manual: true}
-    );
-
-    const onPageChange = useCallback((page: number) => setPage(page - 1), []);
-
-    const handleFilterChange = useCallback(
-        (filters: FilterParams, sorting: Sorting) => {
-            setFilterParams(filters);
-            setSorting(sorting);
-            setPage(0);
-        },
-        [setFilterParams]
-    );
+    const debouncedFilters = useDebounce(filters, 300);
 
     useEffect(() => {
-        fetchPapers()
-            .then((data) => setTotalPages(data.data.totalPages))
-            .catch((error) => {
-                // react strict mode in development calls useEffect twice, the first request gets immediately canceled
-                if (error.code === "ERR_CANCELED") {
-                    return Promise.resolve({status: 499});
-                }
-            });
-    }, [fetchPapers]);
+        const updatedParams: Record<string, string> = {
+            ...(debouncedFilters.title && {title: debouncedFilters.title}),
+            ...(debouncedFilters.authors && {authors: debouncedFilters.authors}),
+            ...(debouncedFilters.fromDate && {fromDate: debouncedFilters.fromDate}),
+            ...(debouncedFilters.toDate && {toDate: debouncedFilters.toDate}),
+            ...(debouncedFilters.keywords &&
+                debouncedFilters.keywords?.length > 0 &&
+                debouncedFilters.keywords.every((key) => key.length > 0) && {
+                    keywords: debouncedFilters.keywords.join(",")
+                }),
+            ...(filters.types && filters.types.length > 0 && {types: filters.types.join(",")}),
+            ...(sorting.sort && {sort: sorting.sort}),
+            order: sorting.order
+        };
+        setSearchParams(updatedParams);
+    }, [sorting, setSearchParams, debouncedFilters, filters.types]);
 
-    return {data, loading, error, page, totalPages, onPageChange, handleFilterChange};
+    const handleFilterChange = useCallback((filters: FilterParams, sorting: Sorting) => {
+        setFilters(filters);
+        setSorting(sorting);
+    }, []);
+
+    return {filters, sorting, handleFilterChange};
 }
 
 export default useFilters;

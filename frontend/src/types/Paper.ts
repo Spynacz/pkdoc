@@ -9,5 +9,5 @@ export interface Paper {
     doi: string;
     privateOnly: boolean;
     type: keyof typeof PaperType;
-    keywords: string;
+    keywords: {id: number; text: string};
 }

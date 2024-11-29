@@ -1,5 +1,6 @@
 import {Button, Pagination} from "flowbite-react";
-import {ReactElement, useState} from "react";
+import {ReactElement, useCallback, useEffect, useState} from "react";
+import useAxios from "../../hooks/useAxios";
 import useFilters from "../../hooks/useFilters";
 import {Paper} from "../../types/Paper";
 import FilterMenu from "./FilterMenu";
@@ -11,8 +12,40 @@ interface PapersListProps {
 
 export default function PapersList(props: PapersListProps): ReactElement {
     const {userId} = props;
-    const {data, loading, page, totalPages, onPageChange, handleFilterChange} = useFilters(userId);
+    const {filters, sorting, handleFilterChange} = useFilters();
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
     const [menuOpen, setMenuOpen] = useState(false);
+
+    const [{data, loading}, fetchPapers] = useAxios(
+        {
+            url: "/api/papers",
+            params: {
+                page,
+                user: userId,
+                size: 10,
+                sort: sorting.sort,
+                order: sorting.order,
+                ...filters,
+                types: filters.types?.join(","),
+                keywords: filters.keywords?.join(",")
+            }
+        },
+        {manual: true}
+    );
+
+    useEffect(() => {
+        fetchPapers()
+            .then((data) => setTotalPages(data.data.totalPages))
+            .catch((error) => {
+                // react strict mode in development calls useEffect twice, the first request gets immediately canceled
+                if (error.code === "ERR_CANCELED") {
+                    return Promise.resolve({status: 499});
+                }
+            });
+    }, [fetchPapers]);
+
+    const onPageChange = useCallback((page: number) => setPage(page - 1), []);
 
     const renderFilterMenu = () => {
         return (
@@ -22,7 +55,7 @@ export default function PapersList(props: PapersListProps): ReactElement {
                         menuOpen ? "translate-x-0" : "-translate-x-full"
                     } absolute z-10 sm:static sm:translate-x-0`}
                 >
-                    <FilterMenu onFilterChange={handleFilterChange} />
+                    <FilterMenu onFilterChange={handleFilterChange} filters={filters} sorting={sorting} />
                 </div>
 
                 <Button
@@ -41,9 +74,10 @@ export default function PapersList(props: PapersListProps): ReactElement {
     const renderPapersList = () => {
         return (
             <div className="flex w-screen justify-center overflow-auto">
-                <div className="ml-1 mr-1 mt-4 flex w-full min-w-0 max-w-screen-lg flex-col space-y-1 sm:ml-4 sm:mr-4 sm:space-y-4">
+                <div className="mx-1 mt-4 flex w-full min-w-0 max-w-screen-lg flex-col space-y-1 sm:mx-4 sm:space-y-4">
                     {data?.content?.map((paper: Paper) => (
                         <PaperCard
+                            key={paper.id}
                             id={paper.id}
                             title={paper.title}
                             authors={paper.authors}

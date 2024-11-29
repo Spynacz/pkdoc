@@ -1,105 +1,50 @@
 import {IconArrowUp} from "@tabler/icons-react";
 import {Checkbox, FloatingLabel, Label, Select} from "flowbite-react";
-import {ChangeEvent, ReactElement, useEffect, useState} from "react";
-import useDebounce from "../../hooks/useDebounce";
-import {SortOrder} from "../../hooks/useFilters";
+import {ChangeEvent, ReactElement} from "react";
+import {FilterParams, Sorting, SortOrder} from "../../hooks/useFilters";
 import {PaperType} from "../../types/PaperType";
 
-interface FilterParams {
-    title?: string;
-    authors?: string;
-    fromDate?: string;
-    toDate?: string;
-    keywords?: string[];
-    types?: PaperType[];
-}
-
-interface Sorting {
-    sort: string;
-    order: SortOrder;
-}
-
-export default function FilterMenu({
-    onFilterChange
-}: {
+interface FilterMenuProps {
     onFilterChange: (filters: FilterParams, sorting: Sorting) => void;
-}): ReactElement {
-    const [filters, setFilters] = useState({
-        title: "",
-        authors: "",
-        fromDate: "",
-        toDate: "",
-        keywords: [] as string[],
-        checkedTypes: {} as Record<PaperType, boolean>
-    });
-    const [sorting, setSorting] = useState({
-        sort: "publishDate",
-        order: SortOrder.ASC
-    });
+    filters: FilterParams;
+    sorting: Sorting;
+}
 
-    const debouncedFilters = useDebounce(filters, 200);
+export default function FilterMenu(props: FilterMenuProps): ReactElement {
+    const {onFilterChange, filters, sorting} = props;
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const {name, value} = e.target;
-        setFilters((prev) => ({...prev, [name]: value}));
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
+        const {name, value} = event.target;
+        onFilterChange({...filters, [name]: value}, sorting);
     };
 
-    const handleKeywordsChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setFilters((prev) => ({
-            ...prev,
-            keywords: e.target.value.split(",").map((k) => k.trim())
-        }));
+    const handleKeywordsChange = (event: ChangeEvent<HTMLInputElement>): void => {
+        onFilterChange(
+            {...filters, keywords: Array.from(event.target.value.split(/[,;]+/))},
+            sorting
+        );
     };
 
     const handleCheckboxChange = (type: PaperType): void => {
-        setFilters((prev) => ({
-            ...prev,
-            checkedTypes: {
-                ...prev.checkedTypes,
-                [type]: !prev.checkedTypes[type]
-            }
-        }));
+        const typesSet = new Set(filters.types);
+        if (typesSet.has(type)) {
+            typesSet.delete(type);
+        } else {
+            typesSet.add(type);
+        }
+        onFilterChange({...filters, types: Array.from(typesSet)}, sorting);
     };
 
-    const handleSortChange = (event: ChangeEvent<HTMLSelectElement>): void => {
-        setSorting({
-            ...sorting,
-            sort: event.target.value
-        });
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+        onFilterChange(filters, {...sorting, sort: e.target.value});
     };
 
     const handleSortOrderChange = (): void => {
-        setSorting({
+        onFilterChange(filters, {
             ...sorting,
             order: sorting.order === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
         });
     };
-
-    useEffect(() => {
-        const selectedTypes = Object.keys(debouncedFilters.checkedTypes)
-            .filter((key) => debouncedFilters.checkedTypes[key as PaperType])
-            .map((key) => key as PaperType);
-
-        const filters: FilterParams = {
-            title: debouncedFilters.title,
-            authors: debouncedFilters.authors,
-            fromDate: debouncedFilters.fromDate,
-            toDate: debouncedFilters.toDate,
-            keywords: debouncedFilters.keywords,
-            types: selectedTypes
-        };
-
-        onFilterChange(filters, sorting);
-    }, [
-        debouncedFilters.authors,
-        debouncedFilters.checkedTypes,
-        debouncedFilters.fromDate,
-        debouncedFilters.keywords,
-        debouncedFilters.title,
-        debouncedFilters.toDate,
-        onFilterChange,
-        sorting
-    ]);
 
     return (
         <div className="m-4 mr-0 flex h-[calc(100vh-97px)] w-60 flex-col gap-3 overflow-scroll rounded-lg border border-gray-200 bg-white p-5 shadow-md dark:border-gray-700 dark:bg-gray-800">
@@ -173,6 +118,7 @@ export default function FilterMenu({
                 label="Keywords"
                 variant="filled"
                 type="text"
+                value={filters.keywords?.join(",")}
                 onChange={handleKeywordsChange}
                 className="rounded-md"
             />
@@ -183,7 +129,7 @@ export default function FilterMenu({
                     <div key={type} className="flex items-center gap-2">
                         <Checkbox
                             id={type}
-                            checked={!!filters.checkedTypes[type]}
+                            checked={filters?.types?.includes(type)}
                             onChange={() => handleCheckboxChange(type)}
                         />
                         <Label htmlFor={type} className="flex">
