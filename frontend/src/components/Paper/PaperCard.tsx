@@ -40,7 +40,7 @@ export default function PaperCard(props: PaperCardProps): ReactElement {
                     <p className="font-normal text-gray-700 dark:text-gray-400">{abstractText}</p>
                 </div>
                 <div>
-                    <p>{doi}</p>
+                    <p className="text-gray-600 dark:text-gray-400">{doi}</p>
                 </div>
             </Card>
         </Link>
