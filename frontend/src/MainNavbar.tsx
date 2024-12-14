@@ -19,7 +19,7 @@ function UserDropdown() {
     const [picture, setPicture] = useState(""); // probably temporary
     const navigate = useNavigate();
 
-    const [{data, loading, error}, refetch] = useAxios(`/api/users/${email}`);
+    const [, refetch] = useAxios(`/api/users/${email}`);
 
     const logOut = (): void => {
         logout();
