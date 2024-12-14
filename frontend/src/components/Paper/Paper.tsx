@@ -27,7 +27,7 @@ export default function Paper(): ReactElement {
 
     return (
         <div className="flex h-[calc(100vh-63px)] flex-col">
-            <div className="flex w-screen justify-center overflow-auto">
+            <div className="mx-auto flex max-w-screen-2xl overflow-auto">
                 <div className="mx-1 mt-4 flex w-full min-w-fit max-w-screen-xl flex-col gap-3 sm:mx-4">
                     <Card>
                         <div className="flex flex-col justify-between sm:flex-row">
@@ -44,7 +44,7 @@ export default function Paper(): ReactElement {
                             </div>
                             <div className="space-y-1 text-right">
                                 <p className="items-center self-center text-lg font-medium text-gray-700 dark:text-gray-400">
-                                    {prettyType}
+                                    <Link to={{pathname: "/", search: `?types=${prettyType}`}}>{prettyType}</Link>
                                 </p>
                                 <p className="text-gray-600 dark:text-gray-400">DOI: {doi || "10.1337/pk.2137"}</p>
                                 <div>

@@ -51,7 +51,11 @@ export default function FilterMenu(props: FilterMenuProps): ReactElement {
         <div className="m-4 mr-0 flex h-[calc(100vh-97px)] w-60 flex-col justify-between rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
             <div className="flex flex-col gap-3 overflow-scroll p-5">
                 <div className="mb-5 flex flex-col">
-                    <Label htmlFor="sorting" value="Sort by" />
+                    <Label
+                        htmlFor="sorting"
+                        value="Sort by"
+                        className="pb-2 text-base text-gray-900 dark:text-gray-50"
+                    />
                     <div className="flex flex-row items-center justify-between">
                         <Select id="sorting" value={sorting.sort} onChange={handleSortChange} className="w-full">
                             <option value="title">Title</option>
@@ -126,7 +130,7 @@ export default function FilterMenu(props: FilterMenuProps): ReactElement {
                 />
 
                 <div className="flex max-w-md flex-col gap-1" id="types">
-                    <h5 className="font-bold">Type</h5>
+                    <h5 className="text-base font-medium text-gray-900 dark:text-gray-50">Type</h5>
                     {(Object.values(PaperType) as Array<PaperType>).map((type: PaperType) => (
                         <div key={type} className="flex items-center gap-2">
                             <Checkbox
@@ -141,7 +145,13 @@ export default function FilterMenu(props: FilterMenuProps): ReactElement {
                     ))}
                 </div>
             </div>
-            <Button className="m-4 mt-0" onClick={handleClearAll}>Clear all filters</Button>
+            {Object.keys(filters).length ? (
+                <Button color="purple" className="m-4 mt-0" onClick={handleClearAll}>
+                    Clear all filters
+                </Button>
+            ) : (
+                ""
+            )}
         </div>
     );
 }

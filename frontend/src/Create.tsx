@@ -12,7 +12,7 @@ export default function Create(): ReactElement {
     const [doi, setDoi] = useState("");
     const [points, setPoints] = useState("");
     const [keywords, setKeywords] = useState([""]);
-    const [type, setType] = useState("");
+    const [type, setType] = useState("ARTICLE");
     const {userId} = useUser();
 
     const navigate = useNavigate();
