@@ -17,5 +17,6 @@ public class PaperResponseDTO {
     private LocalDate publishDate;
     private boolean privateOnly;
     private PaperType type;
+    private int points;
     private Set<KeywordResponseDTO> keywords;
 }

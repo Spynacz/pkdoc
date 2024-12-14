@@ -15,5 +15,6 @@ public class PaperCreateDTO {
     private boolean privateOnly;
     private PaperType type;
     private Set<String> keywords;
+    private int points;
     private Long uploader;
 }

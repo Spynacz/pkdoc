@@ -2,6 +2,7 @@ import useAxios from "./hooks/useAxios";
 import {Button, Datepicker, Label, Select, Textarea, TextInput} from "flowbite-react";
 import {FormEvent, ReactElement, useState} from "react";
 import {useUser} from "./hooks/useUser";
+import {useNavigate} from "react-router";
 
 export default function Create(): ReactElement {
     const [title, setTitle] = useState("");
@@ -9,9 +10,14 @@ export default function Create(): ReactElement {
     const [abstract, setAbstract] = useState("");
     const [date, setDate] = useState("");
     const [doi, setDoi] = useState("");
+    const [points, setPoints] = useState("");
+    const [keywords, setKeywords] = useState([""]);
+    const [type, setType] = useState("");
     const {userId} = useUser();
 
-    const [{data, error}, postPaper] = useAxios(
+    const navigate = useNavigate();
+
+    const [, postPaper] = useAxios(
         {
             url: "/api/papers",
             method: "POST"
@@ -22,6 +28,7 @@ export default function Create(): ReactElement {
     const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
 
+        const keywordsClean = Array.from(new Set(keywords));
         postPaper({
             data: {
                 title: title,
@@ -29,9 +36,14 @@ export default function Create(): ReactElement {
                 abstract: abstract,
                 publishDate: date,
                 doi: doi,
+                points: points || 0,
+                keywords: keywordsClean,
+                type: type,
                 uploader: userId
             }
         });
+
+        navigate(-1);
     };
 
     return (
@@ -41,10 +53,14 @@ export default function Create(): ReactElement {
                 <form onSubmit={handleSubmit} className="min-w-56 space-y-6">
                     <div>
                         <Label htmlFor="type" value="Publication type" />
-                        <Select id="type" required className="mt-1">
-                            <option>Article</option>
-                            <option>Book</option>
-                            <option>Chapter</option>
+                        <Select id="type" required className="mt-1" onChange={(event) => setType(event.target.value)}>
+                            <option value="ARTICLE">Article</option>
+                            <option value="BOOK">Book</option>
+                            <option value="DISSERTATION">Dissertation</option>
+                            <option value="PROJECT">Project</option>
+                            <option value="PATENT">Patent</option>
+                            <option value="JOURNAL">Journal</option>
+                            <option value="CONFERENCE_PAPER">Conference Paper</option>
                         </Select>
                     </div>
                     <div>
@@ -77,6 +93,17 @@ export default function Create(): ReactElement {
                         />
                     </div>
                     <div>
+                        <Label htmlFor="keywords" value="Keywords (optional)" />
+                        <TextInput
+                            id="keywords"
+                            type="text"
+                            value={keywords.join(", ")}
+                            onChange={(event) =>
+                                setKeywords(event.target.value.split(/[,;]+/).map((word) => word.trim()))
+                            }
+                        />
+                    </div>
+                    <div>
                         <Label htmlFor="date" value="Published date" />
                         <Datepicker
                             id="date"
@@ -89,6 +116,16 @@ export default function Create(): ReactElement {
                     <div>
                         <Label htmlFor="doi" value="DOI number (optional)" />
                         <TextInput id="doi" type="text" value={doi} onChange={(event) => setDoi(event.target.value)} />
+                    </div>
+                    <div>
+                        <Label htmlFor="points" value="Points (optional)" />
+                        <TextInput
+                            id="points"
+                            type="number"
+                            min={0}
+                            value={points}
+                            onChange={(event) => setPoints(event.target.value)}
+                        />
                     </div>
                     <Button type="submit" fullSized>
                         Save

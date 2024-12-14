@@ -42,6 +42,9 @@ public class Paper {
     @Column(name = "type")
     private PaperType type;
 
+    @Column(name = "points")
+    private int points;
+
     @ManyToMany
     @JoinTable(name = "paper_keywords",
                joinColumns = @JoinColumn(name = "paper_id"),

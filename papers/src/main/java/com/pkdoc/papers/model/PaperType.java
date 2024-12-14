@@ -1,7 +1,7 @@
 package com.pkdoc.papers.model;
 
 public enum PaperType {
-    PAPER,
+    ARTICLE,
     RESEARCH,
     BOOK,
     DISSERTATION,

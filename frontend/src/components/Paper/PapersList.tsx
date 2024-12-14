@@ -85,6 +85,7 @@ export default function PapersList(props: PapersListProps): ReactElement {
                             publishDate={paper.publishDate}
                             type={paper.type}
                             doi={paper.doi || "10.1337/pk.2137"}
+                            points={paper.points}
                         />
                     ))}
                     <div className="flex min-h-16 justify-center">
