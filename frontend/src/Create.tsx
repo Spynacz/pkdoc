@@ -6,7 +6,7 @@ import {useNavigate} from "react-router";
 
 export default function Create(): ReactElement {
     const [title, setTitle] = useState("");
-    const [authors, setAuthors] = useState("");
+    const [authors, setAuthors] = useState([""]);
     const [abstract, setAbstract] = useState("");
     const [date, setDate] = useState("");
     const [doi, setDoi] = useState("");
@@ -29,10 +29,11 @@ export default function Create(): ReactElement {
         event.preventDefault();
 
         const keywordsClean = Array.from(new Set(keywords));
+        const authorsString = authors.join(", ");
         postPaper({
             data: {
                 title: title,
-                authors: authors,
+                authors: authorsString,
                 abstract: abstract,
                 publishDate: date,
                 doi: doi,
@@ -78,8 +79,10 @@ export default function Create(): ReactElement {
                         <TextInput
                             id="authors"
                             type="text"
-                            value={authors}
-                            onChange={(event) => setAuthors(event.target.value)}
+                            value={authors.join(", ")}
+                            onChange={(event) =>
+                                setAuthors(event.target.value.split(/[,;]+/).map((word) => word.trim()))
+                            }
                             required
                         />
                     </div>

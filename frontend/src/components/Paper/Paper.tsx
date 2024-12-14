@@ -21,6 +21,7 @@ export default function Paper(): ReactElement {
     }
 
     const {title, authors, type, doi, publishDate, abstractText, keywords} = data;
+    const authorsList: string[] = Array.from(authors.split(","));
 
     const prettyType = PaperType[type as keyof typeof PaperType];
 
@@ -32,7 +33,14 @@ export default function Paper(): ReactElement {
                         <div className="flex flex-row justify-between">
                             <div>
                                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{title}</h2>
-                                <h6 className="pt-3 text-gray-900 dark:text-white">{authors}</h6>
+                                <p className="pt-3 text-gray-900 dark:text-white">
+                                    {authorsList.map((author: string, index: number) => (
+                                        <span key={index}>
+                                            <Link to={{pathname: "/", search: `?authors=${author}`}}>{author}</Link>
+                                            {index < authorsList.length - 1 && ", "}
+                                        </span>
+                                    ))}
+                                </p>
                             </div>
                             <div className="text-right">
                                 <p className="items-center self-center text-lg font-medium text-gray-700 dark:text-gray-400">
