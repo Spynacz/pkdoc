@@ -1,9 +1,12 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+
+export const API_URL = "http://192.168.100.169:8080/api";
 
 const axiosInstance = axios.create();
 
 axiosInstance.interceptors.request.use(async (config) => {
-    const token: string | null = sessionStorage.getItem("token");
+    const token = await AsyncStorage.getItem("token");
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -18,12 +21,12 @@ axiosInstance.interceptors.response.use(
             config._retry = true;
             try {
                 const res = await refreshAccessToken();
-                sessionStorage.setItem("token", res.data.token);
-                localStorage.setItem("refreshToken", res.data.refreshToken);
+                await AsyncStorage.setItem("token", res.data.token);
+                await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
                 return axiosInstance(config);
             } catch (refreshError) {
-                sessionStorage.removeItem("token");
-                localStorage.removeItem("refreshToken");
+                await AsyncStorage.removeItem("token");
+                await AsyncStorage.removeItem("refreshToken");
 
                 return Promise.reject(refreshError);
             }
@@ -41,13 +44,13 @@ interface RefreshResponse {
 }
 
 const refreshAccessToken = async (): Promise<RefreshResponse> => {
-    const token: string | null = sessionStorage.getItem("token");
+    const token = await AsyncStorage.getItem("token");
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     };
-    return axios.post("/api/refresh", {token: localStorage.getItem("refreshToken")}, config);
+    return axios.post("/api/refresh", {token: await AsyncStorage.getItem("refreshToken")}, config);
 };
 
 export default axiosInstance;
