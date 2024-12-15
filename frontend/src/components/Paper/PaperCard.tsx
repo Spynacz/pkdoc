@@ -28,7 +28,7 @@ export default function PaperCard(props: PaperCardProps): ReactElement {
                         <h6 className="my-auto text-gray-900 dark:text-white">{authors}</h6>
                     </div>
                     <div>
-                        <p className="my-auto font-normal text-gray-700 dark:text-gray-500">{publishDate}</p>
+                        <p className="my-auto font-normal text-gray-700 dark:text-gray-400">{publishDate}</p>
                     </div>
                 </div>
                 <div>
@@ -42,7 +42,7 @@ export default function PaperCard(props: PaperCardProps): ReactElement {
                 </div>
                 <div className="flex flex-row justify-between">
                     <p className="text-gray-600 dark:text-gray-400">DOI: {doi}</p>
-                    <p className="text-gray-700 dark:text-gray-500">Points: {points}</p>
+                    {points ? <p className="text-gray-700 dark:text-gray-400">Points: {points}</p> : ""}
                 </div>
             </Card>
         </Link>
