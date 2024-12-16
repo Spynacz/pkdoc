@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#f9f9f9"
     },
     container: {
-        padding: 16,
+        padding: 16
     },
     card: {
         marginBottom: 16,
@@ -134,15 +134,18 @@ const styles = StyleSheet.create({
     type: {
         fontSize: 16,
         fontWeight: "500",
-        color: "#666"
+        color: "#666",
+        textAlign: "right"
     },
     doi: {
         marginTop: 4,
-        color: "#888"
+        color: "#888",
+        textAlign: "right"
     },
     publishDate: {
         marginTop: 4,
-        color: "#888"
+        color: "#888",
+        textAlign: "right"
     },
     sectionTitle: {
         fontSize: 20,

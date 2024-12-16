@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     },
     menuButton: {
         position: "absolute",
-        bottom: 70,
+        bottom: 60,
         zIndex: 20
     },
     listContainer: {
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     pagination: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginVertical: 10,
+        marginVertical: 7,
         gap: 10
     },
     paginationText: {

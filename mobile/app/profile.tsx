@@ -1,18 +1,18 @@
 import Account from "@/components/Account";
-import Paper from "@/components/Paper/Paper";
+import UserProfile from "@/components/User/UserProfile";
 import {Stack} from "expo-router";
 import React from "react";
 
-export default function DetailsScreen() {
+export default function ProfileScreen() {
     return (
         <>
             <Stack.Screen
                 options={{
-                    title: "Publication details",
+                    title: "Profile",
                     headerRight: () => <Account />
                 }}
             />
-            <Paper />
+            <UserProfile />
         </>
     );
 }
