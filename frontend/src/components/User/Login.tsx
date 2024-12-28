@@ -76,11 +76,11 @@ export default function Login(): ReactElement {
                         <Checkbox id="remember" />
                         <Label htmlFor="remember">Remember me</Label>
                     </div>
-                    <Button type="submit" fullSized>
+                    <Button color="purple" type="submit" fullSized>
                         Login
                     </Button>
                 </form>
-                <Button as={Link} to={"/register"} fullSized>
+                <Button color="purple" as={Link} to={"/register"} fullSized>
                     I don't have an account
                 </Button>
             </div>

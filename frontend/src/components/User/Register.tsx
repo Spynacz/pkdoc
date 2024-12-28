@@ -92,11 +92,11 @@ export default function Register(): ReactElement {
                         />
                     </div>
                     {error && <div className="text-center text-red-500">{error}</div>}
-                    <Button type="submit" fullSized>
+                    <Button color="purple" type="submit" fullSized>
                         Register
                     </Button>
                 </form>
-                <Button as={Link} to={"/login"} fullSized>
+                <Button color="purple" as={Link} to={"/login"} fullSized>
                     I already have an account
                 </Button>
             </div>

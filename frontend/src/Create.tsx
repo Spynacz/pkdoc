@@ -130,7 +130,7 @@ export default function Create(): ReactElement {
                             onChange={(event) => setPoints(event.target.value)}
                         />
                     </div>
-                    <Button type="submit" fullSized>
+                    <Button color="purple" type="submit" fullSized>
                         Save
                     </Button>
                 </form>

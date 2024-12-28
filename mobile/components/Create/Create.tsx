@@ -55,7 +55,7 @@ export default function Create() {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.form}>
-                <Text style={styles.title}>Add New Publication</Text>
+                {/* <Text style={styles.title}>Add New Publication</Text> */}
 
                 <Text style={styles.label}>Publication Type</Text>
                 <RadioButton.Group onValueChange={(value) => setType(value)} value={type}>
@@ -174,7 +174,6 @@ const styles = StyleSheet.create({
         marginBottom: 16
     },
     label: {
-        marginTop: 16,
         fontSize: 16,
         fontWeight: "500"
     },

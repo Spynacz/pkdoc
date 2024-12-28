@@ -6,7 +6,7 @@ import {UserProvider} from "./components/User/UserContext";
 
 export default function App(): ReactElement {
     return (
-        <div className="flex h-screen flex-col bg-white dark:bg-gray-700">
+        <div className="flex h-screen flex-col bg-gray-100 dark:bg-gray-700">
             <Flowbite>
                 <UserProvider>
                     <MainNavbar />

@@ -28,7 +28,7 @@ export default function Paper(): ReactElement {
     return (
         <div className="flex h-[calc(100vh-63px)] flex-col">
             <div className="flex justify-center overflow-auto">
-                <div className="mx-1 mt-4 flex w-full min-w-fit max-w-screen-xl flex-col gap-3 sm:mx-4">
+                <div className="mx-1 mt-4 flex w-full max-w-screen-xl flex-col gap-3 sm:mx-4">
                     <Card>
                         <div className="flex flex-col justify-between sm:flex-row">
                             <div>

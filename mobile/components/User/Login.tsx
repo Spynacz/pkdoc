@@ -47,7 +47,7 @@ export default function Login() {
         <View style={styles.container}>
             <Stack.Screen
                 options={{
-                    title: "Sing in"
+                    title: "Sign in"
                 }}
             />
             <View style={styles.card}>
@@ -88,7 +88,7 @@ export default function Login() {
                 </Button>
                 <Button
                     mode="outlined"
-                    onPress={() => navigation.navigate("Register")} // Replace "Register" with the name of your registration screen
+                    onPress={() => router.navigate("Register")}
                     style={styles.registerButton}
                 >
                     I don't have an account

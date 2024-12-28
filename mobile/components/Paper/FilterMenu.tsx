@@ -148,9 +148,9 @@ const styles = StyleSheet.create({
     },
     picker: {
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "#f9f9f9",
         borderRadius: 8,
-        padding: 8,
+        paddingTop: 0,
         borderColor: "#ddd",
         borderWidth: 1
     },
