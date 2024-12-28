@@ -1,7 +1,6 @@
 package com.pkdoc.papers.papers;
 
-import com.pkdoc.papers.model.Keyword;
-import com.pkdoc.papers.model.Paper;
+import com.pkdoc.papers.keywords.Keyword;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;

@@ -1,5 +1,7 @@
 package com.pkdoc.papers.config;
 
+import com.pkdoc.papers.auth.JwtAuthFilter;
+import com.pkdoc.papers.auth.JwtAuthProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

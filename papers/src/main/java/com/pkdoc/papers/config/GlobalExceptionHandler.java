@@ -2,7 +2,7 @@ package com.pkdoc.papers.config;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.pkdoc.papers.DTOs.ErrorResponseDTO;
+import com.pkdoc.papers.config.dtos.ErrorResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
