@@ -1,4 +1,4 @@
-import {Button, Pagination} from "flowbite-react";
+import {Button, Card, Pagination} from "flowbite-react";
 import {ReactElement, useCallback, useEffect, useState} from "react";
 import useAxios from "../../hooks/useAxios";
 import useFilters from "../../hooks/useFilters";
@@ -72,6 +72,17 @@ export default function PapersList(props: PapersListProps): ReactElement {
     };
 
     const renderPapersList = () => {
+        if (data?.content?.length === 0) {
+            return (
+                <div className="flex w-screen justify-center overflow-auto">
+                    <div className="mx-1 mt-4 flex w-full min-w-0 max-w-screen-lg flex-col space-y-1 sm:mx-4 sm:space-y-4">
+                        <Card className="text-center text-gray-900 dark:text-gray-100 text-lg">
+                            No results found
+                        </Card>
+                    </div>
+                </div>
+            );
+        }
         return (
             <div className="flex w-screen justify-center overflow-auto">
                 <div className="mx-1 mt-4 flex w-full min-w-0 max-w-screen-lg flex-col space-y-1 sm:mx-4 sm:space-y-4">

@@ -88,7 +88,7 @@ export default function Login() {
                 </Button>
                 <Button
                     mode="outlined"
-                    onPress={() => router.navigate("Register")}
+                    onPress={() => router.navigate("/register")}
                     style={styles.registerButton}
                 >
                     I don't have an account

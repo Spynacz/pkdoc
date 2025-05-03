@@ -37,9 +37,6 @@ public class Paper {
     @Column(name = "publish_date")
     private LocalDate publishDate;
 
-    @Column(name = "private_only")
-    private boolean privateOnly;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private PaperType type;

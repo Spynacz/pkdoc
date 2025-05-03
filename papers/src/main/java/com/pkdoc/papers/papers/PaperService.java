@@ -6,13 +6,14 @@ import com.pkdoc.papers.papers.dtos.PaperQueryParamsDTO;
 import com.pkdoc.papers.papers.dtos.PaperResponseDTO;
 import com.pkdoc.papers.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +32,7 @@ public class PaperService {
         this.userRepository = userRepository;
     }
 
+    @Cacheable(value = "papers", key = "#queryParams.title + '-' + #queryParams.user + '-' + #queryParams.keywords + '-' + #pageable.pageNumber + '-' + #pageable.pageSize")
     public Page<PaperResponseDTO> findAll(PaperQueryParamsDTO queryParams, Pageable pageable) {
         Specification<Paper> spec = Specification.where(null);
 
@@ -54,20 +56,21 @@ public class PaperService {
         }
 
         Page<Paper> papers = paperRepository.findAll(spec, pageable);
-
-        List<PaperResponseDTO> paperResponseDTOs = papers.stream().map(paperMapper::toPaperResponseDTO).toList();
-        return new PageImpl<>(paperResponseDTOs, pageable, papers.getTotalElements());
+        return papers.map(paperMapper::toPaperResponseDTO);
     }
 
+    @Cacheable(value = "paper", key = "#id")
     public Optional<PaperResponseDTO> findById(Long id) {
         return paperRepository.findById(id).map(paperMapper::toPaperResponseDTO);
     }
 
+    @CachePut(value = "paper", key = "#result.id")
     public PaperResponseDTO save(PaperCreateDTO paperCreateDTO) {
         return paperMapper.toPaperResponseDTO(
                 paperRepository.save(paperMapper.toPaper(paperCreateDTO, userRepository, keywordRepository)));
     }
 
+    @CacheEvict(value = "paper", key = "#id")
     public void deleteById(Long id) {
         paperRepository.deleteById(id);
     }

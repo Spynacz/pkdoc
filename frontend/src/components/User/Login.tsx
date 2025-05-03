@@ -15,6 +15,7 @@ export default function Login(): ReactElement {
     const [password, setPassword] = useState<string>("");
     const {login} = useUser();
     const navigate = useNavigate();
+    const [error, setError] = useState();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,9 +28,10 @@ export default function Login(): ReactElement {
             }),
             headers: {"Content-type": "application/json; charset=UTF-8"}
         })
-            .then((response) => {
+            .then(async (response) => {
                 if (!response.ok) {
-                    throw new Error(response.statusText);
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || response.statusText);
                 }
                 return response.json();
             })
@@ -42,7 +44,10 @@ export default function Login(): ReactElement {
                 localStorage.setItem("refreshToken", data.refreshToken);
                 navigate("/");
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                console.log(err);
+                setError(err.message);
+            });
     };
 
     return (
@@ -76,6 +81,7 @@ export default function Login(): ReactElement {
                         <Checkbox id="remember" />
                         <Label htmlFor="remember">Remember me</Label>
                     </div>
+                    {error && <div className="text-center text-red-500">{error}</div>}
                     <Button color="purple" type="submit" fullSized>
                         Login
                     </Button>

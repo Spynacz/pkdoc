@@ -1,8 +1,8 @@
-import useAxios from "./hooks/useAxios";
-import {Button, Datepicker, Label, Select, Textarea, TextInput} from "flowbite-react";
+import {Button, Datepicker, FileInput, Label, Select, Textarea, TextInput} from "flowbite-react";
 import {FormEvent, ReactElement, useState} from "react";
-import {useUser} from "./hooks/useUser";
 import {useNavigate} from "react-router";
+import useAxios from "./hooks/useAxios";
+import {useUser} from "./hooks/useUser";
 
 export default function Create(): ReactElement {
     const [title, setTitle] = useState("");
@@ -129,6 +129,10 @@ export default function Create(): ReactElement {
                             value={points}
                             onChange={(event) => setPoints(event.target.value)}
                         />
+                    </div>
+                    <div>
+                        <Label htmlFor="file-upload" value="Upload PDF file" />
+                        <FileInput id="file-upload" />
                     </div>
                     <Button color="purple" type="submit" fullSized>
                         Save

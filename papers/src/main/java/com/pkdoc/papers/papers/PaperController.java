@@ -27,14 +27,15 @@ public class PaperController {
     }
 
     @GetMapping
-    public Page<PaperResponseDTO> getAllPapers(PaperQueryParamsDTO queryParams, Pageable pageable) {
+    public ResponseEntity<Page<PaperResponseDTO>> getAllPapers(PaperQueryParamsDTO queryParams, Pageable pageable) {
 
         // Optional sorting logic, defaulting to "id" if no sorting provided
         Sort.Direction direction = (queryParams.getOrder() != null) ? Sort.Direction.fromString(queryParams.getOrder()) : Sort.Direction.ASC;
         Sort sorter = (queryParams.getSort() != null) ? Sort.by(direction, queryParams.getSort()) : Sort.by("id");
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorter);
 
-        return paperService.findAll(queryParams, sortedPageable);
+        Page<PaperResponseDTO> response = paperService.findAll(queryParams, sortedPageable);
+        return response.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

@@ -5,11 +5,12 @@ import com.pkdoc.papers.papers.PaperType;
 import com.pkdoc.papers.users.dtos.UserPaperDTO;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Data
-public class PaperResponseDTO {
+public class PaperResponseDTO implements Serializable {
 
     private Long id;
     private String title;

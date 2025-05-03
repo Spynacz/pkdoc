@@ -3,6 +3,10 @@ import {ReactElement} from "react";
 import {Link, useParams} from "react-router";
 import useAxios from "../../hooks/useAxios";
 import {PaperType} from "../../types/PaperType";
+import {Worker} from "@react-pdf-viewer/core";
+import {Viewer} from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import pdf from "../../assets/praca.pdf"
 
 interface Keyword {
     id: number;
@@ -73,7 +77,11 @@ export default function Paper(): ReactElement {
                             ))}
                         </p>
                     </Card>
-                    <Card className="text-gray-900 dark:text-gray-100">full text should go here</Card>
+                    <Card className="text-gray-900 dark:text-gray-100">
+                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                            <Viewer fileUrl={pdf} />
+                        </Worker>
+                    </Card>
                 </div>
             </div>
         </div>
